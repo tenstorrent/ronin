@@ -1,0 +1,121 @@
+// SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
+//
+// SPDX-License-Identifier: Apache-2.0
+
+void kernel(
+        pipe<T> px,
+        pipe<T> pw,
+        pipe<T> pb,
+        pipe<T> py,
+        pipe<T> px_im,
+        pipe<T> pt_im,
+        pipe<T> py_im,
+        uint32 N,
+        uint32 K,
+        uint32 Ko,
+        uint32 Ki,
+        uint32 PQ,
+        uint32 RS,
+        uint32 RSK) {
+    uint32 Kt = K / 32;
+    px.set_frame(Kt);
+    pw.set_frame(RSK / 32);
+    pb.set_frame(Kt);
+    py.set_frame(Kt);
+    px_im.set_frame(Kt);
+    pt_im.set_frame(Ki);
+    py_im.set_frame(Ki);
+    pw.wait_front();
+    pb.wait_front();
+    for (uint32 n = 0; n < N; n++) {
+        for (uint32 pq_start = 0; pq_start < PQ; pq_start += 32) {
+            uint32 iw = 0;
+            for (uint32 rs = 0; rs < RS; rs++) {
+                // px_im = tilize(px)
+                px_im.reserve_back();
+                px.wait_front();
+                tilize_block(px, Kt, px_im);
+                px.pop_front();
+                px_im.push_back();
+                // accumulate in py_im
+                px_im.wait_front();
+                uint32 kx = 0;
+                for (uint32 ko = 0; ko < Ko; ko++) {
+                    if (rs == 0) {
+                        // py_im = px_im * pw
+                        math<T> acc;
+                        for (uint32 ki = 0; ki < Ki; ki++) {
+                            acc.mul_bcast_rows(px_im, pw, kx, iw, ki);
+                            kx++;
+                            iw++;
+                        }
+                        py_im.reserve_back();
+                        for (uint32 ki = 0; ki < Ki; ki++) {
+                            acc.pack(ki, py_im);
+                        }
+                        py_im.push_back();
+                    } else {
+                        // pt_im = px_im * pw
+                        {
+                            math<T> acc;
+                            for (uint32 ki = 0; ki < Ki; ki++) {
+                                acc.mul_bcast_rows(px_im, pw, kx, iw, ki);
+                                kx++;
+                                iw++;
+                            }
+                            pt_im.reserve_back();
+                            for (uint32 ki = 0; ki < Ki; ki++) {
+                                acc.pack(ki, pt_im);
+                            }
+                            pt_im.push_back();
+                        } // acc
+                        // py_im = py_im + pt_im
+                        {
+                            math<T> acc;
+                            pt_im.wait_front();
+                            py_im.wait_front();
+                            for (uint32 ki = 0; ki < Ki; ki++) {
+                                acc.add(py_im, pt_im, ki, ki, ki);
+                            }
+                            py_im.pop_front();
+                            pt_im.pop_front();
+                            py_im.reserve_back();
+                            for (uint32 ki = 0; ki < Ki; ki++) {
+                                acc.pack(ki, py_im);
+                            }
+                            py_im.push_back();
+                        } // acc
+                    }
+                } // ko
+                px_im.pop_front();
+            } // rs
+            // py_im = py_im + pb
+            uint32 kb = 0;
+            for (uint32 ko = 0; ko < Ko; ko++) {
+                math<T> acc;
+                py_im.wait_front();
+                for (uint32 ki = 0; ki < Ki; ki++) {
+                    acc.add_bcast_rows(py_im, pb, ki, kb, ki);
+                    kb++;
+                }
+                py_im.pop_front();
+                py_im.reserve_back();
+                for (uint32 ki = 0; ki < Ki; ki++) {
+                    acc.pack(ki, py_im);
+                }
+                py_im.push_back();
+            } // ko
+            // py = untilize(py_im)
+            py_im.set_frame(Kt);
+            py.reserve_back();
+            py_im.wait_front();
+            untilize_block(py_im, Kt, py);
+            py_im.pop_front();
+            py.push_back();
+            py_im.set_frame(Ki);
+        } // pq_start
+    } // n
+    pb.pop_front();
+    pw.pop_front();
+}
+

@@ -1,0 +1,72 @@
+// SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
+//
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
+
+#include <string>
+
+#include "host/core/api.hpp"
+
+#include "host/tanto/net_global.hpp"
+
+namespace ronin {
+namespace nn {
+namespace mobilenetv2_050 {
+namespace tanto {
+
+namespace core = ronin::tanto::host;
+namespace base = common::tanto;
+
+class MobileNetV2_050_GlobalDsc: public base::NetGlobal {
+public:
+    MobileNetV2_050_GlobalDsc(
+        const core::Device &device, 
+        int N,
+        int batch_size);
+    ~MobileNetV2_050_GlobalDsc();
+public:
+    void init(const std::string &data_dir);
+    int input_count();
+    void set_input(int index, const std::vector<float> &data);
+    int output_count();
+    void get_output(int index, std::vector<float> &data);
+    void run();
+private:
+    void init_layers();
+    void load_buffers();
+    void init_conv2d(
+        int ix,
+        int iw,
+        int ib,
+        int iz,
+        int iy,
+        const base::Conv2dParam &param);
+    void init_fc(
+        int ix,
+        int iw,
+        int ib,
+        int iy,
+        const base::FCParam &param);
+    void init_ds_conv2d(
+        int ix,
+        int iw,
+        int ib,
+        int iw2,
+        int ib2,
+        int iz,
+        int iy,
+        const base::DSConv2dParam &param);
+    void init_reduce_mean(
+        int ix,
+        int iy,
+        const base::ReduceParam &param);
+private:
+    int m_batch_size = 0;
+};
+
+} // namespace tanto
+} // namespace mobilenetv2_050
+} // namespace nn
+} // namespace ronin
+
