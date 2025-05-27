@@ -5,6 +5,8 @@
 #include <string>
 #include <functional>
 
+#include <cstdint>
+#include "llvm/ADT/SmallVector.h"
 #include "clang/AST/Stmt.h"
 
 #include "core/error.hpp"

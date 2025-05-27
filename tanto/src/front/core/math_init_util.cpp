@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+#include <cstdint>
 #include "clang/AST/Stmt.h"
 
 #include "core/graph.hpp"

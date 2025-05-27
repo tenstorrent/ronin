@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
+#include <cstdint>
 
 #include "core/error.hpp"
 #include "core/tooling.hpp"

@@ -6,6 +6,7 @@
 #include <cassert>
 #include <string>
 #include <functional>
+#include <cstdint>
 
 #include "clang/AST/Stmt.h"
 

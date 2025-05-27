@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <cstdint>
 
 #include "clang/Tooling/Transformer/RewriteRule.h"
 

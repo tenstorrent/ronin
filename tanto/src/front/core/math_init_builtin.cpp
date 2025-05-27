@@ -4,6 +4,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <cstdint>
 
 #include "core/graph_builder.hpp"
 #include "core/math_init_builtin.hpp"

@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <functional>
+#include <cstdint>
 
 #include "clang/Tooling/Transformer/RewriteRule.h"
 #include "clang/Tooling/Transformer/Stencil.h"

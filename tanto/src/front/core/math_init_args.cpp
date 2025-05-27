@@ -5,6 +5,7 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 #include "clang/AST/Stmt.h"
 

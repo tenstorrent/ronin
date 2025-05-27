@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <functional>
+#include <cstdint>
 
 #include "llvm/Support/raw_ostream.h"
 
