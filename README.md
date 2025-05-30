@@ -1,6 +1,11 @@
 
 # Project Ronin
 
+*”If one has not been a ronin at least seven times,*<br>
+*he will not be a true retainer. Seven times down, eight times up."*
+
+*Yamamoto Tsunetomo, Hagakure*
+
 ## Objectives
 
 Project Ronin aims at development of a technology stack including high-level general purpose programming model 
