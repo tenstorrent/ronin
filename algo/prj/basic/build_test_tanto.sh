@@ -15,7 +15,7 @@ BIN=../../bin
 
 mkdir -p $BIN/basic
 
-$CXX -std=c++20 -stdlib=libc++ -O3 -o $BIN/basic/test_tanto \
+$CXX -std=c++20 -stdlib=libstdc++ -O3 -o $BIN/basic/test_tanto \
     -I $SRC/basic \
     -I $TANTO/src \
     $SRC/basic/test/tanto/*.cpp \
@@ -24,7 +24,6 @@ $CXX -std=c++20 -stdlib=libc++ -O3 -o $BIN/basic/test_tanto \
     $LIB/basic/host_tanto.a \
     $TANTO/lib/host/core.a \
     -L $METAL/build/lib \
-    -ltt_metal \
-    -lc++
+    -ltt_metal
 
 

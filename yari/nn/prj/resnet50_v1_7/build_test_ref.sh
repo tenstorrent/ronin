@@ -16,7 +16,7 @@ BIN=../../bin
 
 mkdir -p $BIN/$NAME
 
-$CXX -std=c++20 -stdlib=libc++ -O3 -o $BIN/$NAME/test_ref \
+$CXX -std=c++20 -stdlib=libstdc++ -O3 -o $BIN/$NAME/test_ref \
     -I $SRC/$NAME \
     -I $SRC/common \
     -I $OP/src/common \
@@ -32,7 +32,6 @@ $CXX -std=c++20 -stdlib=libc++ -O3 -o $BIN/$NAME/test_ref \
     $OP/lib/pool/host_ref.a \
     $OP/lib/reduce/host_ref.a \
     $OP/lib/common/host_base.a \
-    $OP/lib/common/host_util.a \
-    -lc++
+    $OP/lib/common/host_util.a
 
 

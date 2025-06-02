@@ -117,10 +117,10 @@ Tanto core SDK requires:
 
 - Host machine running Ubuntu 22.04;
 - Tenstorrent Wormhole device;
-- TT-Metalium Release 0.57.
+- TT-Metalium Release 0.58.
 
 TT-Metalium must be downloaded and built from the 
-[official repository](https://github.com/tenstorrent/tt-metal/tree/v0.57.1).
+[official repository](https://github.com/tenstorrent/tt-metal/tree/v0.58.1).
 
 The following environment variables must be set for using Tanto and TT-Metalium:
 
@@ -132,11 +132,11 @@ export ARCH_NAME=wormhole_b0
 
 where `<TT-Metalium home directory>` stands for the installation directory of TT-Metalium.
 
-For example, if TT-Metalium was cloned into `/home/user/metal/r057` and built from source
+For example, if TT-Metalium was cloned into `/home/user/metal/r058` and built from source
 as described in the TT-Metalium documentation, the `TT_METAL_HOME` must be set as:
 
 ```
-export TT_METAL_HOME=/home/user/metal/r057/tt-metal
+export TT_METAL_HOME=/home/user/metal/r058/tt-metal
 ```
 
 Building Tanto applications requires Clang 17. It is assumed that Clang C++ compiler is located at:

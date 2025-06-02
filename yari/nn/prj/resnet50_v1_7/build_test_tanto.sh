@@ -18,7 +18,7 @@ BIN=../../bin
 
 mkdir -p $BIN/$NAME
 
-$CXX -std=c++20 -stdlib=libc++ -O3 -o $BIN/$NAME/test_tanto \
+$CXX -std=c++20 -stdlib=libstdc++ -O3 -o $BIN/$NAME/test_tanto \
     -I $SRC/$NAME \
     -I $SRC/common \
     -I $OP/src/common \
@@ -46,7 +46,6 @@ $CXX -std=c++20 -stdlib=libc++ -O3 -o $BIN/$NAME/test_tanto \
     $OP/lib/common/host_util.a \
     $TANTO/lib/host/core.a \
     -L $METAL/build/lib \
-    -ltt_metal \
-    -lc++
+    -ltt_metal
 
 

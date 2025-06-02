@@ -13,7 +13,7 @@ BOOST=$VENDOR/boost
 SRC=../../src
 LIB=../../lib
 
-$CXX -c -std=c++20 -stdlib=libc++ -O3 \
+$CXX -c -std=c++20 -stdlib=libstdc++ -O3 \
     -D FMT_HEADER_ONLY \
     -D METAL_057 \
     -I $SRC/host \
@@ -22,8 +22,8 @@ $CXX -c -std=c++20 -stdlib=libc++ -O3 \
     -I $METAL/tt_metal/hostdevcommon/api \
     -I $METAL/tt_metal/third_party/umd/device/api \
     -I $METAL/tt_stl \
-    -I $VENDOR \
-    -I $VENDOR/reflect \
+    -I $METAL/build/include \
+    -I $METAL/build/include/metalium-thirdparty \
     -I $BOOST/core/include \
     $SRC/host/core/*.cpp
 

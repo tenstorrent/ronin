@@ -11,7 +11,7 @@ TANTO=../../../tanto
 SRC=../../src
 LIB=../../lib
 
-$CXX -c -std=c++20 -stdlib=libc++ -O3 \
+$CXX -c -std=c++20 -stdlib=libstdc++ -O3 \
     -I $SRC/basic \
     -I $TANTO/src \
     $SRC/basic/host/tanto/*.cpp

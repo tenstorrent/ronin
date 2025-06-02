@@ -13,7 +13,7 @@ OP=../../../op
 SRC=../../src
 LIB=../../lib
 
-$CXX -c -std=c++20 -stdlib=libc++ -O3 \
+$CXX -c -std=c++20 -stdlib=libstdc++ -O3 \
     -I $SRC/$NAME \
     -I $SRC/vendor \
     $SRC/$NAME/test/util/*.cpp

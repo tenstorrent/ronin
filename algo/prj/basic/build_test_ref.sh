@@ -9,7 +9,7 @@ CXX=/usr/lib/llvm-17/bin/clang++
 SRC=../../src
 LIB=../../lib
 
-$CXX -c -std=c++20 -stdlib=libc++ -O3 \
+$CXX -c -std=c++20 -stdlib=libstdc++ -O3 \
     -I $SRC/basic \
     $SRC/basic/test/ref/*.cpp
 

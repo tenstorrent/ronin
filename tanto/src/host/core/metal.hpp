@@ -34,10 +34,8 @@ namespace host {
 
 namespace metal = tt::tt_metal;
 
-#ifdef METAL_057
 using metal::DataMovementProcessor;
 using metal::NOC;
-#endif
 
 } // namespace host
 } // namespace tanto

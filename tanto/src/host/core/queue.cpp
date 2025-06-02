@@ -9,6 +9,12 @@
 #include "core/impl.hpp"
 #include "core/metal.hpp"
 
+#ifndef METAL_057
+
+#include "tt_metal/impl/device/device.hpp"
+
+#endif
+
 namespace ronin {
 namespace tanto {
 namespace host {

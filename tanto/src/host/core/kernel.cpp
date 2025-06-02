@@ -15,6 +15,7 @@
 #include "core/util.hpp"
 #include "core/metal.hpp"
 
+#if 0 // TODO: Revise this
 #ifdef METAL_057
 
 #include "tt-metalium/program.hpp"
@@ -23,6 +24,7 @@
 
 #include "tt_metal/detail/program.hpp"
 
+#endif
 #endif
 
 namespace ronin {
