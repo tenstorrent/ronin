@@ -1,8 +1,8 @@
 
 # Project Ronin
 
-*If one has not been a ronin at least seven times,*<br>
-*he will not be a true retainer. Seven times down, eight times up.*
+*"If one has not been a ronin at least seven times,*<br>
+*he will not be a true retainer. Seven times down, eight times up."*
 
 *Yamamoto Tsunetomo, Hagakure*
 
@@ -10,8 +10,8 @@
 
 Project Ronin aims at development of a technology stack including high-level general purpose programming model 
 as well as respective software tools and libraries for Tenstorrent AI processors. 
-The target audience for this stack will include software engineers willing to develop 
-their own numeric software.
+The target audience includes software engineers implementing numeric applications
+for Tenstorrent hardware.
 
 The project envisages a stepwise development of a series of programming models of increased complexity. 
 The first model in this series (code name Tanto) is currently available.  
