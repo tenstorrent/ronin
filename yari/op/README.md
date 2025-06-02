@@ -60,7 +60,7 @@ To build the library and the unit tests, make  `yari/op/prj` your current direct
 and run this script:
 
 ```
-cd yari/op/orj
+cd yari/op/prj
 ./build_all.sh
 ```
 
