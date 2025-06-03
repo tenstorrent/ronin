@@ -3,7 +3,7 @@
 
 Thank you for your interest in this project.
 
-We welcome your contributions in form of opening bug reports and 
+We welcome your contributions in the form of opening bug reports and 
 discussing new feature proposals.
 
 Code contributions are only accepted for changes fitting the scope of the project. 
