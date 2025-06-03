@@ -1,7 +1,7 @@
 
 # Provenance of reference models
 
-The reference models are derived from the sources listed below.
+The reference models were derived from the sources listed below.
 
 The original models have been converted to the format required by the Yari framework.
 
@@ -13,7 +13,8 @@ The `resnet18` model is derived from this source:
 [https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet18.html
 ](https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet18.html)
 
-[TorchVision](https://github.com/pytorch/vision) is distributed under the following BSD 3-Clause License:
+[TorchVision](https://github.com/pytorch/vision) is subject to the following 
+BSD 3-Clause License:
 
 ```
 BSD 3-Clause License
@@ -60,5 +61,6 @@ The `mobilenetv2_050` model is derived from this source:
 [https://github.com/onnx/models/tree/main/Computer_Vision/mobilenetv2_050_Opset16_timm
 ](https://github.com/onnx/models/tree/main/Computer_Vision/mobilenetv2_050_Opset16_timm)
 
-[ONNX Model Zoo](https://github.com/onnx/models) is distributed under the Apache 2.0 license.
+[ONNX Model Zoo](https://github.com/onnx/models) is subject to the 
+[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 

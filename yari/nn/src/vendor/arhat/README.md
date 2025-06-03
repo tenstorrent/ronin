@@ -1,12 +1,11 @@
 
-# Arhat package components
+# Components derived from Arhat NNEF Tools
 
-This directory contains essential components of the Arhat software package 
-used by the Yari framework.
+This directory contains components derived from Arhat NNEF Tools 
+(https://github.com/fragata-ai/arhat-nnef).
 
-Arhat is a deep learning software package that converts neural network descriptions into
-lean standalone executable code which can be directly deployed on various target platforms
-as part of user applications.
+Arhat NNEF Tools are subject to the Apache License Version 2.0 
+(https://www.apache.org/licenses/LICENSE-2.0).
 
-Arhat components in this directory are made available under Apache 2.0 license.
+NNEF and the NNEF logo are trademarks of the Khronos Group Inc.
 

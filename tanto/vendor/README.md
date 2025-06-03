@@ -1,7 +1,7 @@
 
-# Third party software code
+# Third party software components
 
-This directory contains the third party open source code
-which is used exclusively for building the Tanto host API library.
-It is required to satisfy the external dependencies of TT-Metalium.
+This directory contains the third party open source software components
+which are used solely for building the Tanto host API library.
+They are required to satisfy the external dependencies of TT-Metalium.
 
