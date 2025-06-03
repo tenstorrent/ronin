@@ -31,7 +31,7 @@ and introduces various high-level features that include:
 - new compute and dataflow APIs based on these abstractions;
 - explicit specification for kernel interfaces (runtime parameters);
 - explicit specification for compile time parameters;
-- automated insertion of code implementing low-level features;
+- automated insertion of code implementing low-level features
   (including initialization of math primitives and register management functions).
 
 The detailed specification of Tanto programming model can be found in these documents:
