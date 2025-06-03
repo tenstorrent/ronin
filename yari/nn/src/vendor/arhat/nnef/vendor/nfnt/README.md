@@ -2,7 +2,7 @@
 This directory contains a copy of the open source
 [nfnt/resize] (https://github.com/nfnt/resize) package.
 
-The package is distributed under the following terms.
+The package is subject to the following license:
 
 ```
 Copyright (c) 2012, Jan Schlicht <jan.schlicht@gmail.com>
@@ -21,7 +21,7 @@ THIS SOFTWARE.
 ```
 
 The package contains code implementing support for the YCbCr color space
-which is distributed under the following terms.
+which is subject to the following license:
 
 ```
 Copyright (c) 2014, Charlie Vieth <charlie.vieth@gmail.com>
@@ -38,5 +38,4 @@ OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 THIS SOFTWARE.
 ```
-
 
