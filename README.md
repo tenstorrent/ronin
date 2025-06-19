@@ -90,13 +90,29 @@ Yari framework contains two parts:
 - reference library of neural network models.
 
 
+## Jitte emulator
+
+Jitte is a software framework which emulates 
+execution of Tanto applications on the conventional CPUs. 
+It supports emulation for the host API as well as kernel execution.
+
+The main purpose of Jitte is boosting the development productivity by providing 
+a convenient toolchain  for debugging and testing Tanto applications on 
+the conventional CPUs, without using the real Tenstorrent AI hardware.
+
+Furthermore, the software engineers interested in general purpose programming
+of Tenstorrent AI accelerators can use Jitte for evaluation of the respective
+software development stack prior to purchasing the actual hardware.
+
+
 ## Code structure
 
 The project components are located in these subdirectories:
 
 - `tanto`: Tanto core SDK;
 - `algo`: simple reference algorithms;
-- `yari`: Yari framework.
+- `yari`: Yari framework;
+- `jitte`: Jitte emulator.
 
 
 ## Supported hardware
