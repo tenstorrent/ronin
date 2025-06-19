@@ -108,7 +108,7 @@ export TT_METAL_HOME=<jitte_home>
 export TT_ARCH=wormhole_b0
 ```
 
-where `<jitte_home>` is path to the Jitte home directory.
+where `<jitte_home>` is the path to the Jitte home directory.
 
 
 ## Prerequisites
@@ -139,7 +139,7 @@ run this command:
 
 ## Running examples
 
-The programming examples will be built in the subdirectory `bin/examples'.
+The programming examples will be built in the subdirectory `bin/examples`.
 They include these Jitte applications:
 
 ```
@@ -155,7 +155,7 @@ in the "Environment variables" section.
 Make sure that `clang++` is directly callable from the command line as described above
 in the "Prerequisites" section.
 
-Assuming `jitte` as you current directory, run individual examples, for instance:
+Assuming `jitte` as the current directory, run individual examples, for instance:
 
 ```
 ./bin/examples/eltwise_binary
@@ -177,7 +177,7 @@ cd tanto/jitte/prj/host
 To build Jitte applications for other Tanto components including `algo`,
 `yari/op` and `yari/nn`, use the build scripts located in the `jitte/prj`
 subdirectories of the respective sections. Assuming the repository root
-directory as your starting current directory, perform build using 
+directory as the starting current directory, perform build using 
 the following commands.
 
 For the `algo` module:
@@ -209,7 +209,7 @@ in the Jitte home directory before running applications. This deployment
 is performed using the `deploy_jitte.sh` scripts located in the respective
 `jitte/prj` subdirectories. 
 
-Assuming the repository root directory as your starting current directory, 
+Assuming the repository root directory as the starting current directory, 
 deploy kernels using the following commands.
 
 For the `algo` module:
