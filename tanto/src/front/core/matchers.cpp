@@ -19,6 +19,7 @@ namespace {
 
 auto make_data_type_matcher() {
     return anyOf(
+        qualType(asString("unsigned short")).bind("T_uint16"),
         qualType(asString("unsigned int")).bind("T_uint32"),
         qualType(asString("float")).bind("T_float"),
         recordType(hasDeclaration(cxxRecordDecl(hasName("bfloat16")))).bind("T_bfloat16")

@@ -18,6 +18,8 @@ namespace {
 
 tt::DataFormat map_data_format(DataFormat data_format) {
     switch (data_format) {
+    case DataFormat::UINT16:
+        return tt::DataFormat::UInt16;
     case DataFormat::UINT32:
         return tt::DataFormat::UInt32;
     case DataFormat::FLOAT32:

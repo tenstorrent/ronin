@@ -86,6 +86,19 @@ RewriteRule _make_math_reduce_rule(
                     node("arg4"), ");")));
 }
 
+RewriteRule _make_math_eltwise_binary_dst_rule(
+        const std::string &method,
+        const std::string &api) {
+    // self.<method>(idst0, idst1);
+    //    =>
+    // <api>(idst0, idst1);
+    return makeRule(
+        make_member_call_2_matcher("math", method),
+        changeTo(
+            statement("stmt"), 
+            cat(api, "(", node("arg0"), ", ", node("arg1"), ");")));
+}
+
 RewriteRule _make_math_eltwise_unary_rule(
         const std::string &method,
         const std::string &api) {
@@ -434,6 +447,55 @@ RewriteRule RuleFactory::make_math_transpose_rule() {
                     node("arg2"), ");")));
 }
 
+RewriteRule RuleFactory::make_math_copy_dst_rule() {
+    // self.copy_dst(idst0, idst1);
+    //     =>
+    // copy_dest_values(idst0, idst1);
+    return _make_math_eltwise_binary_dst_rule("copy_dst", "copy_dest_values");
+}
+
+RewriteRule RuleFactory::make_math_add_dst_rule() {
+    // self.add_dst(idst0, idst1);
+    //     =>
+    // add_binary_tile(idst0, idst1);
+    return _make_math_eltwise_binary_dst_rule("add_dst", "add_binary_tile");
+}
+
+RewriteRule RuleFactory::make_math_sub_dst_rule() {
+    // self.sub_dst(idst0, idst1);
+    //     =>
+    // sub_binary_tile(idst0, idst1);
+    return _make_math_eltwise_binary_dst_rule("sub_dst", "sub_binary_tile");
+}
+
+RewriteRule RuleFactory::make_math_rsub_dst_rule() {
+    // self.rsub_dst(idst0, idst1);
+    //     =>
+    // rsub_binary_tile(idst0, idst1);
+    return _make_math_eltwise_binary_dst_rule("rsub_dst", "rsub_binary_tile");
+}
+
+RewriteRule RuleFactory::make_math_mul_dst_rule() {
+    // self.mul_dst(idst0, idst1);
+    //     =>
+    // mul_binary_tile(idst0, idst1);
+    return _make_math_eltwise_binary_dst_rule("mul_dst", "mul_binary_tile");
+}
+
+RewriteRule RuleFactory::make_math_div_dst_rule() {
+    // self.div_dst(idst0, idst1);
+    //     =>
+    // div_binary_tile(idst0, idst1);
+    return _make_math_eltwise_binary_dst_rule("div_dst", "div_binary_tile");
+}
+
+RewriteRule RuleFactory::make_math_power_dst_rule() {
+    // self.power_dst(idst0, idst1);
+    //     =>
+    // power_binary_tile(idst0, idst1);
+    return _make_math_eltwise_binary_dst_rule("power_dst", "power_binary_tile");
+}
+
 RewriteRule RuleFactory::make_math_abs_rule() {
     // self.abs(idst);
     //     =>
@@ -474,6 +536,29 @@ RewriteRule RuleFactory::make_math_cos_rule() {
     //     =>
     // cos_tile(idst);
     return _make_math_eltwise_unary_rule("cos", "cos_tile");
+}
+
+RewriteRule RuleFactory::make_math_cast_bf16_u16_rule() {
+    // self.cast_bf16_u16(idst);
+    //     =>
+    // tanto_cast_bf16_u16(idst);
+    return _make_math_eltwise_unary_rule("cast_bf16_u16", "tanto_cast_bf16_u16");
+}
+
+RewriteRule RuleFactory::make_math_cast_u16_bf16_rule() {
+    // self.cast_u16_bf16(idst);
+    //     =>
+    // tanto_cast_u16_bf16(idst);
+    return _make_math_eltwise_unary_rule("cast_u16_bf16", "tanto_cast_u16_bf16");
+}
+
+RewriteRule RuleFactory::make_math_ceil_rule() {
+    // ACHTUNG: 16-bit output assumed
+    //     (general case requires choice between 'ceil_tile' and 'ceil_tile_float32'
+    // self.ceil(idst);
+    //     =>
+    // ceil_tile(idst);
+    return _make_math_eltwise_unary_approx_rule("ceil", "ceil_tile");
 }
 
 RewriteRule RuleFactory::make_math_div_scalar_rule() {
@@ -537,6 +622,22 @@ RewriteRule RuleFactory::make_math_expm1_rule() {
     //     =>
     // expm1_tile(idst);
     return _make_math_eltwise_unary_rule("expm1", "expm1_tile");
+}
+
+RewriteRule RuleFactory::make_math_fill_rule() {
+    // self.fill(idst, param);
+    //     =>
+    // fill_tile_bitcast(idst, param);
+    return _make_math_eltwise_unary_param_rule("fill", "fill_tile_bitcast");
+}
+
+RewriteRule RuleFactory::make_math_floor_rule() {
+    // ACHTUNG: 16-bit output assumed
+    //     (general case requires choice between 'floor_tile' and 'floor_tile_float32'
+    // self.floor(idst);
+    //     =>
+    // floor_tile(idst);
+    return _make_math_eltwise_unary_approx_rule("floor", "floor_tile");
 }
 
 RewriteRule RuleFactory::make_math_gelu_rule() {

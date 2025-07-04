@@ -552,6 +552,7 @@ bool MathInitPass::pass3() {
     return true;
 }
 
+#if 0 // TODO: Revise this [fixed again 02.07.2025]
 MathInitMask MathInitPass::make_top_init_mask(FuncNode *func) {
     MathInitMask mask;
     if (func == m_graph->main_func()) {
@@ -566,6 +567,26 @@ MathInitMask MathInitPass::make_top_init_mask(FuncNode *func) {
         // init calls that are not none flow out of function and therefore
         // are not considered inside this function (= masked out)
         if (!call->is_none()) {
+            mask.set(i, false);
+        }
+    }
+    return mask;
+}
+#endif
+
+MathInitMask MathInitPass::make_top_init_mask(FuncNode *func) {
+    MathInitMask mask;
+    if (func == m_graph->main_func()) {
+        return mask;
+    }
+    const MathInitState &state = get_func_state(func);
+    for (int i = 0; i < MathInitState::COUNT; i++) {
+        MathInitCall *call = state.at(i);
+        // [1] none - no init calls occur in the scope, nothing to hoist
+        // [2] undef - multiple init calls occur in scope, cannot hoist
+        // [3] otherwise have hoisted init call that flows out of function 
+        // cases [1] and [2] are not considered inside this function (= masked out)
+        if (!call->is_undef()) {
             mask.set(i, false);
         }
     }
@@ -757,6 +778,7 @@ void MathInitPass::diag_dump_graph() {
     if (!DIAG_DUMP_ENABLE) {
         return;
     }
+    printf("---- diag_dump_graph (after graph builder)\n");
     DiagStmtGraphVisitor visitor;
     visitor.visit(m_graph.get());
 }
@@ -765,6 +787,7 @@ void MathInitPass::diag_dump_orig_funcs() {
     if (!DIAG_DUMP_ENABLE) {
         return;
     }
+    printf("---- diag_dump_orig_funcs (after pass 1)\n");
     DiagAnnotStmtGraphVisitor visitor;
     visitor.set_annot_stmt(
         [this](StmtNode *stmt) -> std::string {
@@ -782,6 +805,7 @@ void MathInitPass::diag_dump_flow_funcs() {
     if (!DIAG_DUMP_ENABLE) {
         return;
     }
+    printf("---- diag_dump_flow_funcs (after pass 2)\n");
     DiagAnnotStmtGraphVisitor visitor;
     visitor.set_annot_func(
         [this](FuncNode *func) -> std::string {
@@ -808,6 +832,7 @@ void MathInitPass::diag_dump_final_funcs() {
     if (!DIAG_DUMP_ENABLE) {
         return;
     }
+    printf("---- diag_dump_final_funcs (after pass 3)\n");
     DiagAnnotStmtGraphVisitor visitor;
     visitor.set_annot_stmt(
         [this](StmtNode *stmt) -> std::string {

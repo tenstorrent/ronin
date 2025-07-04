@@ -26,6 +26,8 @@ uint32_t u32_log2(uint32_t n) {
 
 uint32_t get_item_bytes(DataFormat data_format) {
     switch (data_format) {
+    case DataFormat::UINT16:
+        return 2;
     case DataFormat::UINT32:
         return 4;
     case DataFormat::FLOAT32:

@@ -268,6 +268,55 @@ RewriteRule RuleFactory::make_untilize_block_init_rule() {
     return _make_math_init_rule("__untilize_block_init", "tanto_untilize_block_init");
 }
 
+RewriteRule RuleFactory::make_copy_dst_init_rule() {
+    // __copy_dst_init();
+    //     =>
+    // tanto_copy_dst_init();
+    return _make_math_init_rule("__copy_dst_init", "tanto_copy_dst_init");
+}
+
+RewriteRule RuleFactory::make_add_dst_init_rule() {
+    // __add_dst_init();
+    //     =>
+    // tanto_add_dst_init();
+    return _make_math_init_rule("__add_dst_init", "tanto_add_dst_init");
+}
+
+RewriteRule RuleFactory::make_sub_dst_init_rule() {
+    // __sub_dst_init();
+    //     =>
+    // tanto_sub_dst_init();
+    return _make_math_init_rule("__sub_dst_init", "tanto_sub_dst_init");
+}
+
+RewriteRule RuleFactory::make_rsub_dst_init_rule() {
+    // __rsub_dst_init();
+    //     =>
+    // tanto_rsub_dst_init();
+    return _make_math_init_rule("__rsub_dst_init", "tanto_rsub_dst_init");
+}
+
+RewriteRule RuleFactory::make_mul_dst_init_rule() {
+    // __mul_dst_init();
+    //     =>
+    // tanto_mul_dst_init();
+    return _make_math_init_rule("__mul_dst_init", "tanto_mul_dst_init");
+}
+
+RewriteRule RuleFactory::make_div_dst_init_rule() {
+    // __div_dst_init();
+    //     =>
+    // tanto_div_dst_init();
+    return _make_math_init_rule("__div_dst_init", "tanto_div_dst_init");
+}
+
+RewriteRule RuleFactory::make_power_dst_init_rule() {
+    // __power_dst_init();
+    //     =>
+    // tanto_power_dst_init();
+    return _make_math_init_rule("__power_dst_init", "tanto_power_dst_init");
+}
+
 RewriteRule RuleFactory::make_abs_init_rule() {
     // __abs_init();
     //     =>
@@ -301,6 +350,20 @@ RewriteRule RuleFactory::make_binary_scalar_init_rule() {
     //     =>
     // binary_scalar_atan_init();
     return _make_math_init_rule("__binary_scalar_init", "tanto_binary_scalar_init");
+}
+
+RewriteRule RuleFactory::make_cast_init_rule() {
+    // __cast_init();
+    //     =>
+    // tanto_cast_init();
+    return _make_math_init_rule("__cast_init", "tanto_cast_init");
+}
+
+RewriteRule RuleFactory::make_ceil_init_rule() {
+    // __ceil_init();
+    //     =>
+    // tanto_ceil_init();
+    return _make_math_init_rule("__ceil_init", "tanto_ceil_init");
 }
 
 RewriteRule RuleFactory::make_cos_init_rule() {
@@ -364,6 +427,20 @@ RewriteRule RuleFactory::make_expm1_init_rule() {
     //     =>
     // tanto_expm1_init();
     return _make_math_init_rule("__expm1_init", "tanto_expm1_init");
+}
+
+RewriteRule RuleFactory::make_fill_init_rule() {
+    // __fill_init();
+    //     =>
+    // tanto_fill_init();
+    return _make_math_init_rule("__fill_init", "tanto_fill_init");
+}
+
+RewriteRule RuleFactory::make_floor_init_rule() {
+    // __floor_init();
+    //     =>
+    // tanto_floor_init();
+    return _make_math_init_rule("__floor_init", "tanto_floor_init");
 }
 
 RewriteRule RuleFactory::make_gelu_init_rule() {

@@ -42,11 +42,21 @@ std::unordered_map<std::string, MathBuiltinId> g_math_builtin_id_map = {
     {"transpose", MathBuiltinId::TRANSPOSE},
     {"tilize_block", MathBuiltinId::TILIZE_BLOCK},
     {"untilize_block", MathBuiltinId::UNTILIZE_BLOCK},
+    {"copy_dst", MathBuiltinId::COPY_DST},
+    {"add_dst", MathBuiltinId::ADD_DST},
+    {"sub_dst", MathBuiltinId::SUB_DST},
+    {"rsub_dst", MathBuiltinId::RSUB_DST},
+    {"mul_dst", MathBuiltinId::MUL_DST},
+    {"div_dst", MathBuiltinId::DIV_DST},
+    {"power_dst", MathBuiltinId::POWER_DST},
     {"abs", MathBuiltinId::ABS},
     {"acos", MathBuiltinId::ACOS},
     {"add_scalar", MathBuiltinId::ADD_SCALAR},
     {"asin", MathBuiltinId::ASIN},
     {"atan", MathBuiltinId::ATAN},
+    {"cast_bf16_u16", MathBuiltinId::CAST_BF16_U16},
+    {"cast_u16_bf16", MathBuiltinId::CAST_U16_BF16},
+    {"ceil", MathBuiltinId::CEIL},
     {"cos", MathBuiltinId::COS},
     {"div_scalar", MathBuiltinId::DIV_SCALAR},
     {"elu", MathBuiltinId::ELU},
@@ -57,6 +67,8 @@ std::unordered_map<std::string, MathBuiltinId> g_math_builtin_id_map = {
     {"exp", MathBuiltinId::EXP},
     {"exp2", MathBuiltinId::EXP2},
     {"expm1", MathBuiltinId::EXPM1},
+    {"fill", MathBuiltinId::FILL},
+    {"floor", MathBuiltinId::FLOOR},
     {"gelu", MathBuiltinId::GELU},
     {"gez", MathBuiltinId::GEZ},
     {"gtz", MathBuiltinId::GTZ},
@@ -197,11 +209,21 @@ void MathInitFuncHandler::init() {
     enter_math(MathBuiltinId::TILIZE_BLOCK, MathInitFunc::COPY);
     enter_math(MathBuiltinId::UNTILIZE_BLOCK, MathInitFunc::COPY);
     // sfpu
+    enter_sfpu(MathBuiltinId::COPY_DST, MathInitFunc::COPY_DST);
+    enter_sfpu(MathBuiltinId::ADD_DST, MathInitFunc::ADD_DST);
+    enter_sfpu(MathBuiltinId::SUB_DST, MathInitFunc::SUB_DST);
+    enter_sfpu(MathBuiltinId::RSUB_DST, MathInitFunc::RSUB_DST);
+    enter_sfpu(MathBuiltinId::MUL_DST, MathInitFunc::MUL_DST);
+    enter_sfpu(MathBuiltinId::DIV_DST, MathInitFunc::DIV_DST);
+    enter_sfpu(MathBuiltinId::POWER_DST, MathInitFunc::POWER_DST);
     enter_sfpu(MathBuiltinId::ABS, MathInitFunc::ABS);
     enter_sfpu(MathBuiltinId::ACOS, MathInitFunc::ACOS);
     enter_sfpu(MathBuiltinId::ADD_SCALAR, MathInitFunc::BINARY_SCALAR);
     enter_sfpu(MathBuiltinId::ASIN, MathInitFunc::ASIN);
     enter_sfpu(MathBuiltinId::ATAN, MathInitFunc::ATAN);
+    enter_sfpu(MathBuiltinId::CAST_BF16_U16, MathInitFunc::CAST);
+    enter_sfpu(MathBuiltinId::CAST_U16_BF16, MathInitFunc::CAST);
+    enter_sfpu(MathBuiltinId::CEIL, MathInitFunc::CEIL);
     enter_sfpu(MathBuiltinId::COS, MathInitFunc::COS);
     enter_sfpu(MathBuiltinId::DIV_SCALAR, MathInitFunc::BINARY_SCALAR);
     enter_sfpu(MathBuiltinId::ELU, MathInitFunc::ELU);
@@ -212,6 +234,8 @@ void MathInitFuncHandler::init() {
     enter_sfpu(MathBuiltinId::EXP, MathInitFunc::EXP);
     enter_sfpu(MathBuiltinId::EXP2, MathInitFunc::EXP2);
     enter_sfpu(MathBuiltinId::EXPM1, MathInitFunc::EXPM1);
+    enter_sfpu(MathBuiltinId::FILL, MathInitFunc::FILL);
+    enter_sfpu(MathBuiltinId::FLOOR, MathInitFunc::FLOOR);
     enter_sfpu(MathBuiltinId::GELU, MathInitFunc::GELU);
     enter_sfpu(MathBuiltinId::GEZ, MathInitFunc::GEZ);
     enter_sfpu(MathBuiltinId::GTZ, MathInitFunc::GTZ);
@@ -313,11 +337,20 @@ std::unordered_map<MathInitFunc, std::string> g_math_init_func_name_map = {
     {MathInitFunc::REDUCE_SUM_COLS, "reduce_sum_cols"},
     {MathInitFunc::REDUCE_SUM_SCALAR, "reduce_sum_scalar"},
     {MathInitFunc::TRANSPOSE, "transpose"},
+    {MathInitFunc::COPY_DST, "copy_dst"},
+    {MathInitFunc::ADD_DST, "add_dst"},
+    {MathInitFunc::SUB_DST, "sub_dst"},
+    {MathInitFunc::RSUB_DST, "rsub_dst"},
+    {MathInitFunc::MUL_DST, "mul_dst"},
+    {MathInitFunc::DIV_DST, "div_dst"},
+    {MathInitFunc::POWER_DST, "power_dst"},
     {MathInitFunc::ABS, "abs"},
     {MathInitFunc::ACOS, "acos"},
     {MathInitFunc::ASIN, "asin"},
     {MathInitFunc::ATAN, "atan"},
     {MathInitFunc::BINARY_SCALAR, "binary_scalar"},
+    {MathInitFunc::CAST, "cast"},
+    {MathInitFunc::CEIL, "ceil"},
     {MathInitFunc::COS, "cos"},
     {MathInitFunc::ELU, "elu"},
     {MathInitFunc::EQZ, "eqz"},
@@ -327,6 +360,8 @@ std::unordered_map<MathInitFunc, std::string> g_math_init_func_name_map = {
     {MathInitFunc::EXP, "exp"},
     {MathInitFunc::EXP2, "exp2"},
     {MathInitFunc::EXPM1, "expm1"},
+    {MathInitFunc::FILL, "fill"},
+    {MathInitFunc::FLOOR, "floor"},
     {MathInitFunc::GELU, "gelu"},
     {MathInitFunc::GEZ, "gez"},
     {MathInitFunc::GTZ, "gtz"},

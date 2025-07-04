@@ -214,6 +214,8 @@ public:
     void push_back();
     void wait_front();
     void pop_front();
+    T get(uint32 index);
+    void set(uint32 index, T value);
     template<bool DRAM>
     void read(
         uint32 dst_offset, 
@@ -522,12 +524,24 @@ public:
     // transpose
     template<typename U>
         void transpose(pipe<U> src, uint32 isrc, uint32 idst);
+    // copy / dst
+    void copy_dst(uint32 idst0, uint32 idst1); 
+    // eltwise binary / dst
+    void add_dst(uint32 idst0, uint32 idst1);
+    void sub_dst(uint32 idst0, uint32 idst1);
+    void rsub_dst(uint32 idst0, uint32 idst1);
+    void mul_dst(uint32 idst0, uint32 idst1);
+    void div_dst(uint32 idst0, uint32 idst1);
+    void power_dst(uint32 idst0, uint32 idst1);
     // eltwise unary
     void abs(uint32 idst);
     void acos(uint32 idst);
     void add_scalar(uint32 dst, uint32 param);
     void asin(uint32 idst);
     void atan(uint32 idst);
+    void cast_bf16_u16(uint32 idst);
+    void cast_u16_bf16(uint32 idst);
+    void ceil(uint32 idst);
     void cos(uint32 idst);
     void div_scalar(uint32 idst, uint32 param);
     void elu(uint32 idst, uint32 param);
@@ -538,6 +552,8 @@ public:
     void exp(uint32 idst);
     void exp2(uint32 idst);
     void expm1(uint32 idst);
+    void fill(uint32 idst, uint32 param);
+    void floor(uint32 idst);
     void gelu(uint32 idst);
     void gez(uint32 idst);
     void gtz(uint32 idst);

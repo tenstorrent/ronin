@@ -18,7 +18,9 @@
 
 #include "compute_kernel_api/common.h"
 #include "compute_kernel_api/bcast.h"
+#include "compute_kernel_api/copy_dest_values.h"
 #include "compute_kernel_api/eltwise_binary.h"
+#include "compute_kernel_api/eltwise_binary_sfpu.h"
 #include "compute_kernel_api/matmul.h"
 #include "compute_kernel_api/reduce.h"
 #include "compute_kernel_api/tile_move_copy.h"
@@ -29,10 +31,13 @@
 #include "compute_kernel_api.h"
 
 #include "compute_kernel_api/eltwise_unary/binop_with_scalar.h"
+#include "compute_kernel_api/eltwise_unary/ceil.h"
 #include "compute_kernel_api/eltwise_unary/elu.h"
 #include "compute_kernel_api/eltwise_unary/erf_erfc.h"
 #include "compute_kernel_api/eltwise_unary/erfinv.h"
 #include "compute_kernel_api/eltwise_unary/exp.h"
+#include "compute_kernel_api/eltwise_unary/fill.h"
+#include "compute_kernel_api/eltwise_unary/floor.h"
 #include "compute_kernel_api/eltwise_unary/gelu.h"
 #include "compute_kernel_api/eltwise_unary/i0.h"
 #include "compute_kernel_api/eltwise_unary/isinf_isnan.h"
@@ -41,6 +46,7 @@
 #include "compute_kernel_api/eltwise_unary/relu.h"
 #include "compute_kernel_api/eltwise_unary/sqrt.h"
 #include "compute_kernel_api/eltwise_unary/trigonometry.h"
+#include "compute_kernel_api/eltwise_unary/typecast.h"
 
 // used by LLK helpers
 #ifdef TRISC_MATH
@@ -87,6 +93,14 @@ inline void tanto_llk_math_eltwise_unary_datacopy_init(
 #endif
 
 // wrappers
+
+ALWI void tanto_cast_bf16_u16(uint32 idst) {
+    typecast_tile<5, 12>(idst);
+}
+
+ALWI void tanto_cast_u16_bf16(uint32 idst) {
+    typecast_tile<12, 5>(idst);
+}
 
 ALWI void tanto_max_tile(uint32_t idst) {
     max_tile(idst, idst + 1);
@@ -208,6 +222,34 @@ ALWI void tanto_untilize_block_init() {
 
 // sfpu
 
+ALWI void tanto_copy_dst_init() {
+    MATH(( llk_math_eltwise_binary_sfpu_copy_dest_values_init() ));
+}
+
+ALWI void tanto_add_dst_init() {
+    MATH(( llk_math_eltwise_binary_sfpu_binop_init<APPROX, ckernel::sfpu::BinaryOp::ADD>() ));
+}
+
+ALWI void tanto_sub_dst_init() {
+    MATH(( llk_math_eltwise_binary_sfpu_binop_init<APPROX, ckernel::sfpu::BinaryOp::SUB>() ));
+}
+
+ALWI void tanto_rsub_dst_init() {
+    MATH(( llk_math_eltwise_binary_sfpu_binop_init<APPROX, ckernel::sfpu::BinaryOp::RSUB>() ));
+}
+
+ALWI void tanto_mul_dst_init() {
+    MATH(( llk_math_eltwise_binary_sfpu_binop_init<APPROX, ckernel::sfpu::BinaryOp::MUL>() ));
+}
+
+ALWI void tanto_div_dst_init() {
+    MATH(( llk_math_eltwise_binary_sfpu_binop_init<APPROX, ckernel::sfpu::BinaryOp::DIV>() ));
+}
+
+ALWI void tanto_power_dst_init() {
+    MATH(( llk_math_eltwise_binary_sfpu_binop_init<APPROX, ckernel::sfpu::BinaryOp::POW>() ));
+}
+
 ALWI void tanto_abs_init() {
     MATH(( llk_math_eltwise_unary_sfpu_abs_init<APPROX>() ));
 }
@@ -225,7 +267,15 @@ ALWI void tanto_atan_init() {
 }
 
 ALWI void tanto_binary_scalar_init() {
-    MATH((llk_math_eltwise_unary_sfpu_binop_with_scalar_init<APPROX>()));
+    MATH(( llk_math_eltwise_unary_sfpu_binop_with_scalar_init<APPROX>() ));
+}
+
+ALWI void tanto_cast_init() {
+    MATH(( llk_math_eltwise_unary_sfpu_typecast_init<APPROX>() ));
+}
+
+ALWI void tanto_ceil_init() {
+    MATH(( llk_math_eltwise_unary_sfpu_ceil_init<APPROX>() ));
 }
 
 ALWI void tanto_cos_init() {
@@ -265,6 +315,14 @@ ALWI void tanto_exp2_init() {
 
 ALWI void tanto_expm1_init() {
     MATH(( llk_math_eltwise_unary_sfpu_expm1_init<true>() ));
+}
+
+ALWI void tanto_fill_init() {
+    MATH(( llk_math_eltwise_unary_sfpu_fill_init<APPROX>() ));
+}
+
+ALWI void tanto_floor_init() {
+    MATH(( llk_math_eltwise_unary_sfpu_floor_init<APPROX>() ));
 }
 
 ALWI void tanto_gelu_init() {

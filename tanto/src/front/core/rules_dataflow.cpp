@@ -81,6 +81,7 @@ namespace {
 Stencil make_t_stencil() {
     return selectBound(
         {
+            {"T_uint16", cat("uint16_t")},
             {"T_uint32", cat("uint32_t")},
             {"T_float", cat("float")},
             {"T_bfloat16", cat("bfloat16_t")}
@@ -92,6 +93,7 @@ Stencil make_t_stencil() {
 Stencil make_t_shift_stencil() {
     return selectBound(
         {
+            {"T_uint16", cat("1")},
             {"T_uint32", cat("2")},
             {"T_float", cat("2")},
             {"T_bfloat16", cat("1")}
@@ -621,6 +623,38 @@ RewriteRule RuleFactory::make_local_move_pipe_rule() {
 }
 
 // pipe
+
+RewriteRule RuleFactory::make_pipe_get_rule() {
+    // self.get(index)
+    //     =>
+    // reinterpret_cast<volatile tt_l1_ptr T *>(get_read_ptr(self.cb_id))[index]
+    //    ACHTUNG: Support for embedded builtin calls will require normalization pass
+    auto t = make_t_stencil();
+    return makeRule(
+        make_member_call_1_with_t_matcher("pipe", "get"),
+        changeTo(
+            node("stmt"),
+            cat(
+                g_cast_ptr_head, t, g_cast_ptr_tail, 
+                    "(get_read_ptr(", access("self", "cb_id"), "))",
+                    "[", expression("arg0"), "]")));
+}
+
+RewriteRule RuleFactory::make_pipe_set_rule() {
+    // self.set(index, value);
+    //    =>
+    // reinterpret_cast<volatile tt_l1_ptr T *>(get_write_ptr(self.cb_id))[index] = value;
+    auto t = make_t_stencil();
+    return makeRule(
+        make_member_call_2_with_t_matcher("pipe", "set"),
+        changeTo(
+            statement("stmt"),
+            cat(
+                g_cast_ptr_head, t, g_cast_ptr_tail, 
+                    "(get_write_ptr(", access("self", "cb_id"), "))",
+                    "[", expression("arg0"), "]",
+                    " = ", expression("arg1"), ";")));
+}
 
 RewriteRule RuleFactory::make_pipe_read_global_rule() {
     // self.read(dst_offset, src, src_offset, count);
