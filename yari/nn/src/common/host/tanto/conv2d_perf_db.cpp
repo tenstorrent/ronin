@@ -158,8 +158,8 @@ bool Conv2dPerfDb::select_algo(
         bool fuse_add,
         Conv2dAlgo &algo,
         int &batch_size) {
-printf("@@@ Conv2dPerfDb::select_algo N %d H %d W %d C %d P %d Q %d K %d R %d S %d add %d\n",
-N, param.H, param.W, param.C, param.P, param.Q, param.K, param.R, param.S, int(fuse_add));
+//printf("@@@ Conv2dPerfDb::select_algo N %d H %d W %d C %d P %d Q %d K %d R %d S %d add %d\n",
+//N, param.H, param.W, param.C, param.P, param.Q, param.K, param.R, param.S, int(fuse_add));
     algo = Conv2dAlgo::NONE;
     batch_size = 0;
     int num_ranges = int(m_ranges.size());
@@ -195,7 +195,7 @@ N, param.H, param.W, param.C, param.P, param.Q, param.K, param.R, param.S, int(f
         return false;
     }
     batch_size = infer_batch_size(N, algo);
-printf("@@@   => algo %d batch_size %d\n", int(algo), batch_size);
+//printf("@@@   => algo %d batch_size %d\n", int(algo), batch_size);
     return true;
 }
 
