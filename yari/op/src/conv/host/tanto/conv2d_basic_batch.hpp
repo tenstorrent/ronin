@@ -83,10 +83,30 @@ private:
     void create_lw_bias_add_math();
     void create_lw_bias_unary_math();
     void create_lw_bias_add_unary_math();
+    void create_param_bias_reader();
+    void create_param_lx_bias_reader();
+    void create_param_pw_bias_reader();
+    void create_param_writer();
+    void create_param_mcast_writer();
+    void create_param_lw_writer();
+    void create_param_lw_mcast_writer();
+    void create_param_add_writer();
+    void create_param_mcast_add_writer();
+    void create_param_lw_add_writer();
+    void create_param_lw_mcast_add_writer();
+    void create_param_bias_math();
+    void create_param_bias_add_math();
+    void create_param_bias_unary_math();
+    void create_param_bias_add_unary_math();
+    void create_param_lw_bias_math();
+    void create_param_lw_bias_add_math();
+    void create_param_lw_bias_unary_math();
+    void create_param_lw_bias_add_unary_math();
     void init_locals();
     void compute_grid_dims(uint32_t &x, uint32_t &y);
     void compute_mask(std::vector<uint32_t> &vmask);
     std::string get_unary_kernel_suffix();
+    uint32_t get_unary_op_code();
     uint32_t encode_unary_param0();
     bool is_unary_relu6();
 private:
@@ -170,7 +190,9 @@ private:
     uint32_t m_delta_s = 0;
     base::PostOpSpec m_post_op;
     uint32_t m_options = 0;
-    std::string m_kernel_base_path;
+    bool m_enable_param_kernels = false;
+    std::string m_metal_kernel_base_path;
+    std::string m_param_kernel_base_path;
     std::map<std::string, std::string> m_defines;
 };
 

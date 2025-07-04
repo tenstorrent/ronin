@@ -25,6 +25,8 @@ namespace core = ronin::tanto::host;
 namespace base = ronin::op::common::base;
 namespace util = ronin::op::common::util;
 
+constexpr bool ENABLE_PARAM_KERNELS = false;
+
 //
 //    Conv2dBasicSplit
 //
@@ -130,7 +132,9 @@ void Conv2dBasicSplit::init(
     m_delta_s = m_dilation_w * m_C;
     m_end_q = m_start_q + m_Q * m_delta_q;
 
-    m_kernel_base_path = "op/conv/device/metal";
+    m_enable_param_kernels = ENABLE_PARAM_KERNELS;
+    m_metal_kernel_base_path = "op/conv/device/metal";
+    m_param_kernel_base_path = "op/conv/device/param";
     m_defines = {{"T", "bfloat16"}};
 
     init_options();
@@ -355,7 +359,11 @@ void Conv2dBasicSplit::create_kernels() {
 }
 
 void Conv2dBasicSplit::create_bias_reader() {
-    std::string path = m_kernel_base_path + "/basic_split_bias_reader.cpp";
+    if (m_enable_param_kernels) {
+        create_param_bias_reader();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_split_bias_reader.cpp";
     m_reader = 
         core::Kernel(
             m_program, 
@@ -467,7 +475,11 @@ void kernel(
 }
 
 void Conv2dBasicSplit::create_writer() {
-    std::string path = m_kernel_base_path + "/basic_split_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_split_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -555,7 +567,11 @@ void kernel(
 }
 
 void Conv2dBasicSplit::create_add_writer() {
-    std::string path = m_kernel_base_path + "/basic_split_add_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_add_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_split_add_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -647,7 +663,11 @@ void kernel(
 }
 
 void Conv2dBasicSplit::create_bias_math() {
-    std::string path = m_kernel_base_path + "/basic_split_bias_math.cpp";
+    if (m_enable_param_kernels) {
+        create_param_bias_math();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_split_bias_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -691,7 +711,11 @@ void kernel(
 }
 
 void Conv2dBasicSplit::create_bias_add_math() {
-    std::string path = m_kernel_base_path + "/basic_split_bias_add_math.cpp";
+    if (m_enable_param_kernels) {
+        create_param_bias_add_math();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_split_bias_add_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -739,8 +763,12 @@ void kernel(
 }
 
 void Conv2dBasicSplit::create_bias_unary_math() {
+    if (m_enable_param_kernels) {
+        create_param_bias_unary_math();
+        return;
+    }
     std::string suffix = get_unary_kernel_suffix();
-    std::string path = m_kernel_base_path + "/basic_split_bias_" + suffix + "_math.cpp";
+    std::string path = m_metal_kernel_base_path + "/basic_split_bias_" + suffix + "_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -787,8 +815,12 @@ void kernel(
 }
 
 void Conv2dBasicSplit::create_bias_add_unary_math() {
+    if (m_enable_param_kernels) {
+        create_param_bias_add_unary_math();
+        return;
+    }
     std::string suffix = get_unary_kernel_suffix();
-    std::string path = m_kernel_base_path + "/basic_split_bias_add_" + suffix + "_math.cpp";
+    std::string path = m_metal_kernel_base_path + "/basic_split_bias_add_" + suffix + "_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -905,6 +937,28 @@ std::string Conv2dBasicSplit::get_unary_kernel_suffix() {
     default:
         assert(false);
         return "<?>";
+    }
+}
+
+uint32_t Conv2dBasicSplit::get_unary_op_code() {
+    // these op codes must be used by all kernels
+    static constexpr uint32_t
+        UNARY_OP_RELU = 0,
+        UNARY_OP_RELU6 = 1;
+    base::PostOp op = m_post_op.op();
+    switch (op) {
+    case base::PostOp::RELU:
+        return UNARY_OP_RELU;
+    case base::PostOp::CLIP:
+        if (is_unary_relu6()) {
+            return UNARY_OP_RELU6;
+        }
+        // generic clip is not yet implemented
+        assert(false);
+        return 0;
+    default:
+        assert(false);
+        return 0;
     }
 }
 

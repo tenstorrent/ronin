@@ -19,6 +19,11 @@ cd ./conv
 ./build_all.sh
 cd ..
 
+echo "Build deform_conv"
+cd ./deform_conv
+./build_all.sh
+cd ..
+
 echo "Build fc"
 cd ./fc
 ./build_all.sh

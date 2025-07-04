@@ -8,6 +8,7 @@ mkdir -p $TT_METAL_HOME/op
 
 mkdir -p $TT_METAL_HOME/op/binary
 mkdir -p $TT_METAL_HOME/op/conv
+mkdir -p $TT_METAL_HOME/op/deform_conv
 mkdir -p $TT_METAL_HOME/op/fc
 mkdir -p $TT_METAL_HOME/op/group_conv
 mkdir -p $TT_METAL_HOME/op/interp
@@ -17,6 +18,7 @@ mkdir -p $TT_METAL_HOME/op/reduce
 
 cp -R -v ../src/binary/device $TT_METAL_HOME/op/binary
 cp -R -v ../src/conv/device $TT_METAL_HOME/op/conv
+cp -R -v ../src/deform_conv/device $TT_METAL_HOME/op/deform_conv
 cp -R -v ../src/fc/device $TT_METAL_HOME/op/fc
 cp -R -v ../src/group_conv/device $TT_METAL_HOME/op/group_conv
 cp -R -v ../src/interp/device $TT_METAL_HOME/op/interp

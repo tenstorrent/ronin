@@ -30,6 +30,8 @@ constexpr bool ENABLE_CACHE_LW = true;
 constexpr bool ENABLE_MCAST = true;
 constexpr bool ENABLE_PWISE = true;
 
+constexpr bool ENABLE_PARAM_KERNELS = false;
+
 //
 //    Conv2dBasicBatch
 //
@@ -152,7 +154,9 @@ void Conv2dBasicBatch::init(
     m_delta_s = m_dilation_w * m_C;
     m_end_q = m_start_q + m_Q * m_delta_q;
 
-    m_kernel_base_path = "op/conv/device/metal";
+    m_enable_param_kernels = ENABLE_PARAM_KERNELS;
+    m_metal_kernel_base_path = "op/conv/device/metal";
+    m_param_kernel_base_path = "op/conv/device/param";
     m_defines = {{"T", "bfloat16"}};
 
     init_options();
@@ -449,7 +453,11 @@ void Conv2dBasicBatch::create_kernels() {
 }
 
 void Conv2dBasicBatch::create_bias_reader() {
-    std::string path = m_kernel_base_path + "/basic_batch_bias_reader.cpp";
+    if (m_enable_param_kernels) {
+        create_param_bias_reader();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_bias_reader.cpp";
     m_reader = 
         core::Kernel(
             m_program, 
@@ -528,7 +536,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lx_bias_reader() {
-    std::string path = m_kernel_base_path + "/basic_batch_lx_bias_reader.cpp";
+    if (m_enable_param_kernels) {
+        create_param_lx_bias_reader();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lx_bias_reader.cpp";
     m_reader = 
         core::Kernel(
             m_program, 
@@ -611,7 +623,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_pw_bias_reader() {
-    std::string path = m_kernel_base_path + "/basic_batch_pw_bias_reader.cpp";
+    if (m_enable_param_kernels) {
+        create_param_pw_bias_reader();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_pw_bias_reader.cpp";
     m_reader = 
         core::Kernel(
             m_program, 
@@ -666,7 +682,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -717,7 +737,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_mcast_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_mcast_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_mcast_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_mcast_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -795,7 +819,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lw_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_lw_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_lw_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -844,7 +872,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lw_mcast_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_lw_mcast_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_lw_mcast_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_mcast_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -920,7 +952,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_add_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_add_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_add_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_add_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -975,7 +1011,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_mcast_add_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_mcast_add_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_mcast_add_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_mcast_add_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -1057,7 +1097,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lw_add_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_lw_add_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_lw_add_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_add_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -1110,7 +1154,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lw_mcast_add_writer() {
-    std::string path = m_kernel_base_path + "/basic_batch_lw_mcast_add_writer.cpp";
+    if (m_enable_param_kernels) {
+        create_param_lw_mcast_add_writer();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_mcast_add_writer.cpp";
     m_writer = 
         core::Kernel(
             m_program, 
@@ -1190,7 +1238,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_bias_math() {
-    std::string path = m_kernel_base_path + "/basic_batch_bias_math.cpp";
+    if (m_enable_param_kernels) {
+        create_param_bias_math();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_bias_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1235,7 +1287,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_bias_add_math() {
-    std::string path = m_kernel_base_path + "/basic_batch_bias_add_math.cpp";
+    if (m_enable_param_kernels) {
+        create_param_bias_add_math();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_bias_add_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1278,14 +1334,18 @@ void kernel(
         m_Ko,
         m_Ki,
         m_P * m_Q,
-        m_R * m_S,
+        m_R * m_S
     };
     m_math.set_args(m_grid, args);
 }
 
 void Conv2dBasicBatch::create_bias_unary_math() {
+    if (m_enable_param_kernels) {
+        create_param_bias_unary_math();
+        return;
+    }
     std::string suffix = get_unary_kernel_suffix();
-    std::string path = m_kernel_base_path + "/basic_batch_bias_" + suffix + "_math.cpp";
+    std::string path = m_metal_kernel_base_path + "/basic_batch_bias_" + suffix + "_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1333,8 +1393,12 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_bias_add_unary_math() {
+    if (m_enable_param_kernels) {
+        create_param_bias_add_unary_math();
+        return;
+    }
     std::string suffix = get_unary_kernel_suffix();
-    std::string path = m_kernel_base_path + "/basic_batch_bias_add_" + suffix + "_math.cpp";
+    std::string path = m_metal_kernel_base_path + "/basic_batch_bias_add_" + suffix + "_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1386,7 +1450,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lw_bias_math() {
-    std::string path = m_kernel_base_path + "/basic_batch_lw_bias_math.cpp";
+    if (m_enable_param_kernels) {
+        create_param_lw_bias_math();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_bias_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1433,7 +1501,11 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lw_bias_add_math() {
-    std::string path = m_kernel_base_path + "/basic_batch_lw_bias_add_math.cpp";
+    if (m_enable_param_kernels) {
+        create_param_lw_bias_add_math();
+        return;
+    }
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_bias_add_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1478,14 +1550,18 @@ void kernel(
         m_Ki,
         m_P * m_Q,
         m_R * m_S,
-        m_R * m_S * m_K * m_C,
+        m_R * m_S * m_K * m_C
     };
     m_math.set_args(m_grid, args);
 }
 
 void Conv2dBasicBatch::create_lw_bias_unary_math() {
+    if (m_enable_param_kernels) {
+        create_param_lw_bias_unary_math();
+        return;
+    }
     std::string suffix = get_unary_kernel_suffix();
-    std::string path = m_kernel_base_path + "/basic_batch_lw_bias_" + suffix + "_math.cpp";
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_bias_" + suffix + "_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1535,8 +1611,12 @@ void kernel(
 }
 
 void Conv2dBasicBatch::create_lw_bias_add_unary_math() {
+    if (m_enable_param_kernels) {
+        create_param_lw_bias_add_unary_math();
+        return;
+    }
     std::string suffix = get_unary_kernel_suffix();
-    std::string path = m_kernel_base_path + "/basic_batch_lw_bias_add_" + suffix + "_math.cpp";
+    std::string path = m_metal_kernel_base_path + "/basic_batch_lw_bias_add_" + suffix + "_math.cpp";
     m_math = 
         core::Kernel(
             m_program, 
@@ -1661,6 +1741,28 @@ std::string Conv2dBasicBatch::get_unary_kernel_suffix() {
     default:
         assert(false);
         return "<?>";
+    }
+}
+
+uint32_t Conv2dBasicBatch::get_unary_op_code() {
+    // these op codes must be used by all kernels
+    static constexpr uint32_t
+        UNARY_OP_RELU = 0,
+        UNARY_OP_RELU6 = 1;
+    base::PostOp op = m_post_op.op();
+    switch (op) {
+    case base::PostOp::RELU:
+        return UNARY_OP_RELU;
+    case base::PostOp::CLIP:
+        if (is_unary_relu6()) {
+            return UNARY_OP_RELU6;
+        }
+        // generic clip is not yet implemented
+        assert(false);
+        return 0;
+    default:
+        assert(false);
+        return 0;
     }
 }
 

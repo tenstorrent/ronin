@@ -68,9 +68,15 @@ private:
     void create_mcast_writer();
     void create_bias_math();
     void create_bias_unary_math();
+    void create_param_bias_reader();
+    void create_param_writer();
+    void create_param_mcast_writer();
+    void create_param_bias_math();
+    void create_param_bias_unary_math();
     void init_locals();
     void compute_grid_dims(uint32_t &x, uint32_t &y);
     std::string get_unary_kernel_suffix();
+    uint32_t get_unary_op_code();
     uint32_t encode_unary_param0();
     bool is_unary_relu6();
 private:
@@ -157,7 +163,9 @@ private:
     base::PostOpSpec m_post_op;
     uint32_t m_options = 0;
     uint32_t m_enable_c4 = false;
-    std::string m_kernel_base_path;
+    bool m_enable_param_kernels = false;
+    std::string m_metal_kernel_base_path;
+    std::string m_param_kernel_base_path;
     std::map<std::string, std::string> m_defines;
 };
 
