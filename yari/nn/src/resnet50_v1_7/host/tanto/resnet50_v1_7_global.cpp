@@ -18,6 +18,9 @@
 
 #include "host/tanto/resnet50_v1_7_global.hpp"
 
+// TODO: Revise this
+#define ALWAYS_FUSE_ADD
+
 namespace ronin {
 namespace nn {
 namespace resnet50_v1_7 {
@@ -94,13 +97,13 @@ Conv2dParam conv103 = {7, 7, 512, 7, 7, 512, 3, 3, 1, 1, 1, 1, 1, 1, relu};
 Conv2dParam conv105 = {7, 7, 512, 7, 7, 2048, 1, 1, 0, 0, 1, 1, 1, 1, noop};
 // cannot fuse Add with Conv because of L1 size limit on Wormhole
 Conv2dParam conv106 = {7, 7, 1024, 7, 7, 2048, 1, 1, 0, 0, 1, 1, 1, 1, relu};
-#if 1 // TODO: Revise this
+#ifndef ALWAYS_FUSE_ADD // TODO: Revise this
 Conv2dParam conv106a = {7, 7, 1024, 7, 7, 2048, 1, 1, 0, 0, 1, 1, 1, 1, noop};
 BinaryParam binary106b = {7 * 7, 2048, relu};
 #endif
 Conv2dParam conv109 = {7, 7, 2048, 7, 7, 512, 1, 1, 0, 0, 1, 1, 1, 1, relu};
 Conv2dParam conv113 = {7, 7, 512, 7, 7, 2048, 1, 1, 0, 0, 1, 1, 1, 1, relu};
-#if 1 // TODO: Revise this
+#ifndef ALWAYS_FUSE_ADD // TODO: Revise this
 Conv2dParam conv113a = {7, 7, 512, 7, 7, 2048, 1, 1, 0, 0, 1, 1, 1, 1, noop};
 BinaryParam binary113b = {7 * 7, 2048, relu};
 #endif
@@ -223,8 +226,7 @@ void ResNet50V17Global::init_layers() {
     init_conv2d(186, 187, 188, -1, 190, conv101);
     init_conv2d(190, 191, 192, -1, 194, conv103);
     init_conv2d(194, 195, 196, -1, 197, conv105);
-// cannot fuse Add with Conv because of L1 size limit on Wormhole
-#if 0 // TODO: Revise this
+#ifdef ALWAYS_FUSE_ADD // TODO: Revise this
     init_conv2d(186, 198, 199, 197, 202, conv106);
 #else
     init_conv2d(186, 198, 199, -1, 234, conv106a);
@@ -232,7 +234,7 @@ void ResNet50V17Global::init_layers() {
 #endif
     init_conv2d(202, 203, 204, -1, 206, conv109);
     init_conv2d(206, 207, 208, -1, 210, conv103);
-#if 0 // TODO: Revise this
+#ifdef ALWAYS_FUSE_ADD // TODO: Revise this
     init_conv2d(210, 211, 212, 202, 215, conv113);
 #else
     init_conv2d(210, 211, 212, -1, 235, conv113a);
@@ -240,7 +242,7 @@ void ResNet50V17Global::init_layers() {
 #endif
     init_conv2d(215, 216, 217, -1, 219, conv109);
     init_conv2d(219, 220, 221, -1, 223, conv103);
-#if 0 // TODO: Revise this
+#ifdef ALWAYS_FUSE_ADD // TODO: Revise this
     init_conv2d(223, 224, 225, 215, 228, conv113);
 #else
     init_conv2d(223, 224, 225, -1, 236, conv113a);

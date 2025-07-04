@@ -91,6 +91,35 @@ Conv2dBasicBatchLayer::Conv2dBasicBatchLayer(
 Conv2dBasicBatchLayer::~Conv2dBasicBatchLayer() { }
 
 //
+//    Conv2dBasicSplitLayer
+//
+
+Conv2dBasicSplitLayer::Conv2dBasicSplitLayer(
+        int N,
+        const Conv2dParam &param,
+        int batch_size):
+            LayerBase(
+                N,
+                param.H,
+                param.W,
+                param.C,
+                param.P,
+                param.Q,
+                param.K,
+                param.R,
+                param.S,
+                param.pad_h,
+                param.pad_w,
+                param.stride_h,
+                param.stride_w,
+                param.dilation_h,
+                param.dilation_w,
+                param.post_op,
+                batch_size) { }
+
+Conv2dBasicSplitLayer::~Conv2dBasicSplitLayer() { }
+
+//
 //    Conv2dBasicSpatialLayer
 //
 

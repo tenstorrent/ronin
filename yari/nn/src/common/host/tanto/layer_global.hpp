@@ -6,6 +6,7 @@
 
 #include "binary/host/tanto/binary_batch.hpp"
 #include "conv/host/tanto/conv2d_basic_batch.hpp"
+#include "conv/host/tanto/conv2d_basic_split.hpp"
 #include "conv/host/tanto/conv2d_basic_spatial.hpp"
 #include "conv/host/tanto/conv2d_image_batch.hpp"
 #include "fc/host/tanto/fc_batch.hpp"
@@ -71,6 +72,17 @@ public:
         const Conv2dParam &param,
         int batch_size);
     ~Conv2dBasicBatchLayer();
+};
+
+using op::conv::tanto::Conv2dBasicSplit;
+
+class Conv2dBasicSplitLayer: public LayerBase<Conv2dBasicSplit> {
+public:
+    Conv2dBasicSplitLayer(
+        int N,
+        const Conv2dParam &param,
+        int batch_size);
+    ~Conv2dBasicSplitLayer();
 };
 
 using op::conv::tanto::Conv2dBasicSpatial;

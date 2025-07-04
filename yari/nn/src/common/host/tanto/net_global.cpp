@@ -19,6 +19,7 @@
 
 #include "host/tanto/layer_base.hpp"
 #include "host/tanto/layer_global.hpp"
+#include "host/tanto/conv2d_perf_db.hpp"
 #include "host/tanto/net_global.hpp"
 
 namespace ronin {
@@ -34,6 +35,8 @@ using namespace ronin::op::common;
 
 constexpr bool ENABLE_CONV2D_BASIC_SPATIAL = true;
 constexpr bool ENABLE_GROUP_CONV2D_DW_SPATIAL = true;
+
+constexpr bool ENABLE_CONV2D_PERF_DB = true;
 
 core::Global null_global;
 
@@ -114,6 +117,67 @@ std::vector<uint16_t> tensor_to_vector(
     }
     result = layer->transform_input(input, result);
     return util::float_to_u16b(result);
+}
+
+bool select_conv2d_algo(
+        NetGlobal *net, 
+        const Conv2dParam &param, 
+        bool fuse_add,
+        Conv2dAlgo &algo, 
+        int &batch_size) {
+    Conv2dPerfDb &db = net->conv2d_perf_db();
+    return db.select_algo(net->N(), param, fuse_add, algo, batch_size);
+}
+
+void init_conv2d_algo(
+        Conv2dAlgo algo,
+        NetGlobal *net,
+        int ix,
+        int iw,
+        int ib,
+        int iz,
+        int iy,
+        const Conv2dParam &param,
+        int batch_size) {
+    switch (algo) {
+    case Conv2dAlgo::BASIC_BATCH:
+        init_conv2d_basic_batch(
+            net,
+            ix,
+            iw,
+            ib,
+            iz,
+            iy,
+            param,
+            batch_size);
+        break;
+    case Conv2dAlgo::BASIC_SPLIT_8:
+    case Conv2dAlgo::BASIC_SPLIT_16:
+        init_conv2d_basic_split(
+            net,
+            ix,
+            iw,
+            ib,
+            iz,
+            iy,
+            param,
+            batch_size);
+        break;
+    case Conv2dAlgo::BASIC_SPATIAL:
+        init_conv2d_basic_spatial(
+            net,
+            ix,
+            iw,
+            ib,
+            iz,
+            iy,
+            param,
+            batch_size);
+        break;
+    default:
+        assert(false);
+        break;
+    }
 }
 
 } // namespace
@@ -366,6 +430,9 @@ void init_conv2d(
         int batch_size) {
     // placeholder for generic version with
     // automated implementation choice based on param
+    Conv2dAlgo algo = Conv2dAlgo::NONE;
+    int algo_batch_size = 0;
+    bool fuse_add = (iz >= 0);
     if (param.C <= 4) {
         init_conv2d_image_batch(
             net,
@@ -376,6 +443,29 @@ void init_conv2d(
             iy,
             param,
             batch_size);
+    } else if (ENABLE_CONV2D_PERF_DB && 
+            select_conv2d_algo(net, param, fuse_add, algo, algo_batch_size)) {
+        init_conv2d_algo(
+            algo,
+            net,
+            ix,
+            iw,
+            ib,
+            iz,
+            iy,
+            param,
+            algo_batch_size);
+    } else if (fuse_add && param.K >= 2028) {
+        // cannot use 'basic_bath' because of L1 overflow
+        init_conv2d_basic_split(
+            net,
+            ix,
+            iw,
+            ib,
+            iz,
+            iy,
+            param,
+            16);
     } else if (ENABLE_CONV2D_BASIC_SPATIAL && batch_size == 1) {
         // EXPERIMENTAL
         init_conv2d_basic_spatial(
@@ -411,6 +501,34 @@ void init_conv2d_basic_batch(
         int batch_size) {
     auto layer_unique = 
         std::make_unique<Conv2dBasicBatchLayer>(
+            net->N(), param, batch_size);
+    auto layer = layer_unique.get();
+    net->add_layer(std::move(layer_unique));
+    net->init_input(ix, layer, 0);
+    net->init_input(iw, layer, 1);
+    net->init_input(ib, layer, 2);
+    net->init_input(iz, layer, 3);
+    net->init_output(iy, layer, 0);
+    layer->init(
+        net->device(), 
+        net->get_buffer(ix), 
+        net->get_buffer(iw), 
+        net->get_buffer(ib), 
+        net->get_buffer(iz), 
+        net->get_buffer(iy));
+}
+
+void init_conv2d_basic_split(
+        NetGlobal *net,
+        int ix,
+        int iw,
+        int ib,
+        int iz,
+        int iy,
+        const Conv2dParam &param,
+        int batch_size) {
+    auto layer_unique = 
+        std::make_unique<Conv2dBasicSplitLayer>(
             net->N(), param, batch_size);
     auto layer = layer_unique.get();
     net->add_layer(std::move(layer_unique));

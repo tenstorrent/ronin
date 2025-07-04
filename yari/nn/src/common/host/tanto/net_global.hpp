@@ -12,6 +12,7 @@
 #include "host/core/api.hpp"
 
 #include "host/tanto/layer_base.hpp"
+#include "host/tanto/conv2d_perf_db.hpp"
 
 namespace ronin {
 namespace nn {
@@ -31,6 +32,9 @@ public:
 public:
     void set_data_dir(const std::string &data_dir);
     void run();
+    Conv2dPerfDb &conv2d_perf_db() {
+        return m_conv2d_perf_db;
+    }
     const core::Device &device() {
         return m_device;
     }
@@ -67,6 +71,7 @@ protected:
         int output = 0;
     };
 protected:
+    Conv2dPerfDb m_conv2d_perf_db;
     core::Device m_device;
     int m_N = 0;
     std::string m_data_dir;
@@ -138,6 +143,15 @@ void init_conv2d(
     const Conv2dParam &param,
     int batch_size);
 void init_conv2d_basic_batch(
+    NetGlobal *net,
+    int ix,
+    int iw,
+    int ib,
+    int iz,
+    int iy,
+    const Conv2dParam &param,
+    int batch_size);
+void init_conv2d_basic_split(
     NetGlobal *net,
     int ix,
     int iw,
