@@ -301,6 +301,22 @@ public:
         uint32_t full_ct_dim, 
         bool diagonal) = 0;
     virtual void pack_untilize_init_short(uint32_t icb, uint32_t ocb, uint32_t block_ct_dim) = 0;
+    // copy_dest_values
+    virtual void copy_dest_values_init() = 0;
+    virtual void copy_dest_values(uint32_t idst0, uint32_t idst1) = 0;
+    // eltwise_binary_sfpu
+    virtual void add_binary_tile_init() = 0;
+    virtual void add_binary_tile(uint32_t idst0, uint32_t idst1) = 0;
+    virtual void sub_binary_tile_init() = 0;
+    virtual void sub_binary_tile(uint32_t idst0, uint32_t idst1) = 0;
+    virtual void mul_binary_tile_init() = 0;
+    virtual void mul_binary_tile(uint32_t idst0, uint32_t idst1) = 0;
+    virtual void div_binary_tile_init() = 0;
+    virtual void div_binary_tile(uint32_t idst0, uint32_t idst1) = 0;
+    virtual void rsub_binary_tile_init() = 0;
+    virtual void rsub_binary_tile(uint32_t idst0, uint32_t idst1) = 0;
+    virtual void power_binary_tile_init() = 0;
+    virtual void power_binary_tile(uint32_t idst0, uint32_t idst1) = 0;
     // eltwise_unary_sfpu
     virtual void rsqrt_tile_init() = 0;
     virtual void rsqrt_tile(uint32_t idst, bool fast_and_approx) = 0;
@@ -355,6 +371,10 @@ public:
     virtual void mul_unary_tile(uint32_t idst, uint32_t param0) = 0;
     virtual void div_unary_tile(uint32_t idst, uint32_t param0) = 0;
     virtual void rsub_unary_tile(uint32_t idst, uint32_t param0) = 0;
+    // eltwise_unary/ceil
+    virtual void ceil_tile_init() = 0;
+    virtual void ceil_tile(uint32_t idst) = 0;
+    virtual void ceil_tile_float32(uint32_t idst) = 0;
     // eltwise_unary/elu
     virtual void elu_tile_init() = 0;
     virtual void elu_tile(uint32_t idst, uint32_t param0) = 0;
@@ -369,6 +389,13 @@ public:
     // eltwise_unary/exp
     virtual void exp_tile_init() = 0;
     virtual void exp_tile(uint32_t idst) = 0;
+    // eltwise_unary/fill
+    virtual void fill_tile_init() = 0;
+    virtual void fill_tile_bitcast(uint32_t idst, uint32_t param) = 0;
+    // eltwise_unary/floor
+    virtual void floor_tile_init() = 0;
+    virtual void floor_tile(uint32_t idst) = 0;
+    virtual void floor_tile_float32(uint32_t idst) = 0;
     // eltwise_unary/gelu
     virtual void gelu_tile_init() = 0;
     virtual void gelu_tile(uint32_t idst, bool fast_and_approx) = 0;
@@ -411,6 +438,9 @@ public:
     virtual void cos_tile(uint32_t idst) = 0;
     virtual void tan_tile_init() = 0;
     virtual void tan_tile(uint32_t idst) = 0;
+    // eltwise_unary/typecast.h
+    virtual void typecast_tile_init() = 0;
+    virtual void typecast_tile(uint32_t in_dtype, uint32_t out_dtype, uint32_t idst) = 0;
     // Tanto extensions: math
     virtual void tanto_compute_init() = 0;
     virtual void tanto_copy_init() = 0;
@@ -436,11 +466,20 @@ public:
     virtual void tanto_transpose_init() = 0;
     virtual void tanto_tilize_block_init() = 0;
     virtual void tanto_untilize_block_init() = 0;
+    virtual void tanto_copy_dst_init() = 0;
+    virtual void tanto_add_dst_init() = 0;
+    virtual void tanto_sub_dst_init() = 0;
+    virtual void tanto_rsub_dst_init() = 0;
+    virtual void tanto_mul_dst_init() = 0;
+    virtual void tanto_div_dst_init() = 0;
+    virtual void tanto_power_dst_init() = 0;
     virtual void tanto_abs_init() = 0;
     virtual void tanto_acos_init() = 0;
     virtual void tanto_asin_init() = 0;
     virtual void tanto_atan_init() = 0;
     virtual void tanto_binary_scalar_init() = 0;
+    virtual void tanto_cast_init() = 0;
+    virtual void tanto_ceil_init() = 0;
     virtual void tanto_cos_init() = 0;
     virtual void tanto_elu_init() = 0;
     virtual void tanto_eqz_init() = 0;
@@ -450,6 +489,8 @@ public:
     virtual void tanto_exp_init() = 0;
     virtual void tanto_exp2_init() = 0;
     virtual void tanto_expm1_init() = 0;
+    virtual void tanto_fill_init() = 0;
+    virtual void tanto_floor_init() = 0;
     virtual void tanto_gelu_init() = 0;
     virtual void tanto_gez_init() = 0;
     virtual void tanto_gtz_init() = 0;

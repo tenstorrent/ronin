@@ -8,7 +8,9 @@
 
 #include "compute_kernel_api/common.h"
 #include "compute_kernel_api/bcast.h"
+#include "compute_kernel_api/copy_dest_values.h"
 #include "compute_kernel_api/eltwise_binary.h"
+#include "compute_kernel_api/eltwise_binary_sfpu.h"
 #include "compute_kernel_api/matmul.h"
 #include "compute_kernel_api/reduce.h"
 #include "compute_kernel_api/tile_move_copy.h"
@@ -19,10 +21,13 @@
 #include "compute_kernel_api.h"
 
 #include "compute_kernel_api/eltwise_unary/binop_with_scalar.h"
+#include "compute_kernel_api/eltwise_unary/ceil.h"
 #include "compute_kernel_api/eltwise_unary/elu.h"
 #include "compute_kernel_api/eltwise_unary/erf_erfc.h"
 #include "compute_kernel_api/eltwise_unary/erfinv.h"
 #include "compute_kernel_api/eltwise_unary/exp.h"
+#include "compute_kernel_api/eltwise_unary/fill.h"
+#include "compute_kernel_api/eltwise_unary/floor.h"
 #include "compute_kernel_api/eltwise_unary/gelu.h"
 #include "compute_kernel_api/eltwise_unary/i0.h"
 #include "compute_kernel_api/eltwise_unary/isinf_isnan.h"
@@ -31,6 +36,7 @@
 #include "compute_kernel_api/eltwise_unary/relu.h"
 #include "compute_kernel_api/eltwise_unary/sqrt.h"
 #include "compute_kernel_api/eltwise_unary/trigonometry.h"
+#include "compute_kernel_api/eltwise_unary/typecast.h"
 
 // temporary solution
 #define FAST_AND_APPROX false
@@ -54,6 +60,14 @@ struct Pipe {
 struct Semaphore {
     uint32 addr;
 };
+
+inline void tanto_cast_bf16_u16(uint32 idst) {
+    typecast_tile<5, 12>(idst);
+}
+
+inline void tanto_cast_u16_bf16(uint32 idst) {
+    typecast_tile<12, 5>(idst);
+}
 
 inline void tanto_max_tile(uint32_t idst) {
     max_tile(idst, idst + 1);
@@ -85,11 +99,20 @@ API void tanto_reduce_sum_scalar_init();
 API void tanto_transpose_init();
 API void tanto_tilize_block_init();
 API void tanto_untilize_block_init();
+API void tanto_copy_dst_init();
+API void tanto_add_dst_init();
+API void tanto_sub_dst_init();
+API void tanto_rsub_dst_init();
+API void tanto_mul_dst_init();
+API void tanto_div_dst_init();
+API void tanto_power_dst_init();
 API void tanto_abs_init();
 API void tanto_acos_init();
 API void tanto_asin_init();
 API void tanto_atan_init();
 API void tanto_binary_scalar_init();
+API void tanto_cast_init();
+API void tanto_ceil_init();
 API void tanto_cos_init();
 API void tanto_elu_init();
 API void tanto_eqz_init();
@@ -99,6 +122,8 @@ API void tanto_erfinv_init();
 API void tanto_exp_init();
 API void tanto_exp2_init();
 API void tanto_expm1_init();
+API void tanto_fill_init();
+API void tanto_floor_init();
 API void tanto_gelu_init();
 API void tanto_gez_init();
 API void tanto_gtz_init();

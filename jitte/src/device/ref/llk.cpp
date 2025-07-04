@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include "core/kernel_structs.hpp"
 #include "core/llk_defs.hpp"
 #include "core/memory.hpp"
 #include "core/cb_api.hpp"
@@ -53,6 +54,18 @@ inline float lrelu(float x, float slope) {
     return (x <= 0.0f) ? slope * x : x;
 }
 
+inline float pow_u32(float x, uint32_t pow) {
+    float y = 1.0f;
+    while (pow > 0) {
+        if ((pow & 1) != 0) {
+            y *= x;
+        }
+        y *= y;
+        pow >>= 1;
+    }
+    return y;
+}
+
 union U32 {
     float f;
     uint32_t i;
@@ -82,6 +95,12 @@ float u32_as_float(int x) {
     U32 v;
     v.i = uint32_t(x);
     return v.f;
+}
+
+uint32_t float_as_u32(float x) {
+    U32 v;
+    v.f = x;
+    return v.i;
 }
 
 void diag_tile_stats(const char *tag, const float *tile) {
@@ -555,8 +574,62 @@ void LLK::math_reduce(PoolType type, ReduceDim dim, uint32_t dst_index) {
 
 // math/sfpu
 
+void LLK::math_eltwise_binary_sfpu_copy_dest_values(uint32_t dst_index0, uint32_t dst_index1) {
+    float *dst0 = get_dst_ptr(dst_index0);
+    float *dst1 = get_dst_ptr(dst_index1);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        dst0[i] = dst1[i];
+    }
+}
+
+void LLK::math_eltwise_binary_sfpu_binop(
+        SfpuBinaryOp binop, 
+        uint32_t dst_index0, 
+        uint32_t dst_index1) {
+    float *dst0 = get_dst_ptr(dst_index0);
+    float *dst1 = get_dst_ptr(dst_index1);
+    switch (binop) {
+    case SfpuBinaryOp::ADD:
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+            dst0[i] += dst1[i];
+        }
+        break;
+    case SfpuBinaryOp::SUB:
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+            dst0[i] -= dst1[i];
+        }
+        break;
+    case SfpuBinaryOp::MUL:
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+            dst0[i] *= dst1[i];
+        }
+        break;
+    case SfpuBinaryOp::DIV:
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+            dst0[i] /= dst1[i];
+        }
+        break;
+    case SfpuBinaryOp::RSUB:
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+            dst0[i] = dst1[i] - dst0[i];
+        }
+        break;
+    case SfpuBinaryOp::POW:
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+            dst0[i] = std::pow(dst0[i], dst1[i]);
+        }
+        break;
+    default:
+        assert(false);
+        break;
+    }
+}
+
 void LLK::math_eltwise_unary_sfpu_rsqrt(uint32_t dst_index, bool approx) {
-    // TODO
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        dst[i] = 1.0f / std::sqrt(dst[i]);
+    }
 }
 
 void LLK::math_eltwise_unary_sfpu_sigmoid(uint32_t dst_index) {
@@ -599,7 +672,11 @@ void LLK::math_eltwise_unary_sfpu_abs(uint32_t dst_index) {
 }
 
 void LLK::math_eltwise_unary_sfpu_sign(uint32_t dst_index) {
-    // TODO
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        float x = dst[i];
+        dst[i] = (x < 0.0f) ? -1.0f : (x == 0.0f) ? 0.0f : 1.0f;
+    }
 }
 
 void LLK::math_eltwise_unary_sfpu_square(uint32_t dst_index) {
@@ -661,7 +738,10 @@ void LLK::math_eltwise_unary_sfpu_max(uint32_t dst0_index, uint32_t dst1_index) 
 }
 
 void LLK::math_eltwise_unary_sfpu_power(uint32_t dst_index, uint32_t pow) {
-    // TODO
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        dst[i] = pow_u32(dst[i], pow);
+    }
 }
 
 void LLK::math_eltwise_unary_sfpu_exp2(uint32_t dst_index) {
@@ -672,7 +752,12 @@ void LLK::math_eltwise_unary_sfpu_exp2(uint32_t dst_index) {
 }
 
 void LLK::math_eltwise_unary_sfpu_heaviside(uint32_t dst_index, uint32_t param0) {
-    // TODO
+    float step = u32_as_float(param0);
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        float x = dst[i];
+        dst[i] = (x < 0.0f) ? 0.0f : (x == 0.0f) ? step : 1.0f;
+    }
 }
 
 void LLK::math_eltwise_unary_sfpu_expm1(uint32_t dst_index) {
@@ -743,6 +828,27 @@ void LLK::math_eltwise_unary_sfpu_rsub_scalar(uint32_t dst_index, uint32_t param
     }
 }
 
+void LLK::math_eltwise_unary_sfpu_ceil(uint32_t dst_index) {
+    constexpr float I16_MIN = -32767.0f;
+    constexpr float I16_MAX = 32767.0f;
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        float x = dst[i];
+        // emulate Metal LLK behavior
+        if (x >= I16_MIN && x <= I16_MAX) {
+            x = std::ceil(x);
+        }
+        dst[i] = x;
+    }
+}
+
+void LLK::math_eltwise_unary_sfpu_ceil_float32(uint32_t dst_index) {
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        dst[i] = std::ceil(dst[i]);
+    }
+}
+
 void LLK::math_eltwise_unary_sfpu_elu(uint32_t dst_index, uint32_t param0) {
 #if 0 // TODO: Revise this
     float slope = u16b_as_float(param0);
@@ -776,6 +882,35 @@ void LLK::math_eltwise_unary_sfpu_exponential(uint32_t dst_index) {
     float *dst = get_dst_ptr(dst_index);
     for (uint32_t i = 0; i < TILE_SIZE; i++) {
         dst[i] = std::exp(dst[i]);
+    }
+}
+
+void LLK::math_eltwise_unary_sfpu_fill_bitcast(uint32_t dst_index, uint32_t param0) {
+    float fill = u32_as_float(param0);
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        dst[i] = fill;
+    }
+}
+
+void LLK::math_eltwise_unary_sfpu_floor(uint32_t dst_index) {
+    constexpr float I16_MIN = -32767.0f;
+    constexpr float I16_MAX = 32767.0f;
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        float x = dst[i];
+        // emulate Metal LLK behavior
+        if (x >= I16_MIN && x <= I16_MAX) {
+            x = std::floor(x);
+        }
+        dst[i] = x;
+    }
+}
+
+void LLK::math_eltwise_unary_sfpu_floor_float32(uint32_t dst_index) {
+    float *dst = get_dst_ptr(dst_index);
+    for (uint32_t i = 0; i < TILE_SIZE; i++) {
+        dst[i] = std::floor(dst[i]);
     }
 }
 
@@ -899,6 +1034,29 @@ void LLK::math_eltwise_unary_sfpu_tan(uint32_t dst_index) {
     float *dst = get_dst_ptr(dst_index);
     for (uint32_t i = 0; i < TILE_SIZE; i++) {
         dst[i] = std::tan(dst[i]);
+    }
+}
+
+void LLK::math_eltwise_unary_sfpu_typecast(
+        uint32_t in_dtype, 
+        uint32_t out_dtype, 
+        uint32_t dst_index) {
+    float *dst = get_dst_ptr(dst_index);
+    if (in_dtype == int(DataFormat::Float16_b) && out_dtype == int(DataFormat::UInt16)) {
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+#if 0 // ACHTUNG: Temporary workaround - need regular support of uint16 pack/unpack
+            dst[i] = u32_as_float(uint16_t(dst[i]));
+#else
+            dst[i] = u16b_as_float(uint16_t(dst[i]));
+#endif
+        }
+    } else if (in_dtype == int(DataFormat::UInt16) && out_dtype == int(DataFormat::Float16_b)) {
+        for (uint32_t i = 0; i < TILE_SIZE; i++) {
+            dst[i] = float(float_as_u32(dst[i]));
+        }
+    } else {
+        // not yet implemented
+        assert(false);
     }
 }
 

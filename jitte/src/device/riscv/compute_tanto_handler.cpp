@@ -123,6 +123,34 @@ void tanto_untilize_block_init(Compute *api, Riscv32Core *core) {
     api->tanto_untilize_block_init();
 }
 
+void tanto_copy_dst_init(Compute *api, Riscv32Core *core) {
+    api->tanto_copy_dst_init();
+}
+
+void tanto_add_dst_init(Compute *api, Riscv32Core *core) {
+    api->tanto_add_dst_init();
+}
+
+void tanto_sub_dst_init(Compute *api, Riscv32Core *core) {
+    api->tanto_sub_dst_init();
+}
+
+void tanto_rsub_dst_init(Compute *api, Riscv32Core *core) {
+    api->tanto_rsub_dst_init();
+}
+
+void tanto_mul_dst_init(Compute *api, Riscv32Core *core) {
+    api->tanto_mul_dst_init();
+}
+
+void tanto_div_dst_init(Compute *api, Riscv32Core *core) {
+    api->tanto_div_dst_init();
+}
+
+void tanto_power_dst_init(Compute *api, Riscv32Core *core) {
+    api->tanto_power_dst_init();
+}
+
 void tanto_abs_init(Compute *api, Riscv32Core *core) {
     api->tanto_abs_init();
 }
@@ -141,6 +169,14 @@ void tanto_atan_init(Compute *api, Riscv32Core *core) {
 
 void tanto_binary_scalar_init(Compute *api, Riscv32Core *core) {
     api->tanto_binary_scalar_init();
+}
+
+void tanto_cast_init(Compute *api, Riscv32Core *core) {
+    api->tanto_cast_init();
+}
+
+void tanto_ceil_init(Compute *api, Riscv32Core *core) {
+    api->tanto_ceil_init();
 }
 
 void tanto_cos_init(Compute *api, Riscv32Core *core) {
@@ -177,6 +213,14 @@ void tanto_exp2_init(Compute *api, Riscv32Core *core) {
 
 void tanto_expm1_init(Compute *api, Riscv32Core *core) {
     api->tanto_expm1_init();
+}
+
+void tanto_fill_init(Compute *api, Riscv32Core *core) {
+    api->tanto_fill_init();
+}
+
+void tanto_floor_init(Compute *api, Riscv32Core *core) {
+    api->tanto_floor_init();
 }
 
 void tanto_gelu_init(Compute *api, Riscv32Core *core) {

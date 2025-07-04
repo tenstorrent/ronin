@@ -37,11 +37,20 @@
     DECL_BUILTIN(tanto_transpose_init, 0) \
     DECL_BUILTIN(tanto_tilize_block_init, 0) \
     DECL_BUILTIN(tanto_untilize_block_init, 0) \
+    DECL_BUILTIN(tanto_copy_dst_init, 0) \
+    DECL_BUILTIN(tanto_add_dst_init, 0) \
+    DECL_BUILTIN(tanto_sub_dst_init, 0) \
+    DECL_BUILTIN(tanto_rsub_dst_init, 0) \
+    DECL_BUILTIN(tanto_mul_dst_init, 0) \
+    DECL_BUILTIN(tanto_div_dst_init, 0) \
+    DECL_BUILTIN(tanto_power_dst_init, 0) \
     DECL_BUILTIN(tanto_abs_init, 0) \
     DECL_BUILTIN(tanto_acos_init, 0) \
     DECL_BUILTIN(tanto_asin_init, 0) \
     DECL_BUILTIN(tanto_atan_init, 0) \
     DECL_BUILTIN(tanto_binary_scalar_init, 0) \
+    DECL_BUILTIN(tanto_cast_init, 0) \
+    DECL_BUILTIN(tanto_ceil_init, 0) \
     DECL_BUILTIN(tanto_cos_init, 0) \
     DECL_BUILTIN(tanto_elu_init, 0) \
     DECL_BUILTIN(tanto_eqz_init, 0) \
@@ -51,6 +60,8 @@
     DECL_BUILTIN(tanto_exp_init, 0) \
     DECL_BUILTIN(tanto_exp2_init, 0) \
     DECL_BUILTIN(tanto_expm1_init, 0) \
+    DECL_BUILTIN(tanto_fill_init, 0) \
+    DECL_BUILTIN(tanto_floor_init, 0) \
     DECL_BUILTIN(tanto_gelu_init, 0) \
     DECL_BUILTIN(tanto_gez_init, 0) \
     DECL_BUILTIN(tanto_gtz_init, 0) \

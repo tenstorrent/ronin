@@ -16,6 +16,15 @@ namespace metal {
 namespace device {
 namespace ref {
 
+enum class SfpuBinaryOp {
+    ADD = 0,
+    SUB = 1,
+    MUL = 2,
+    DIV = 3,
+    RSUB = 4,
+    POW = 5
+};
+
 class LLK {
 public:
     LLK(Memory *l1, CB *cb);
@@ -64,6 +73,11 @@ public:
     void math_reduce(PoolType type, ReduceDim dim, uint32_t dst_index);
 public:
     // math/sfpu
+    void math_eltwise_binary_sfpu_copy_dest_values(uint32_t dst_index0, uint32_t dst_index1);
+    void math_eltwise_binary_sfpu_binop(
+        SfpuBinaryOp binop, 
+        uint32_t dst_index0, 
+        uint32_t dst_index1);
     void math_eltwise_unary_sfpu_rsqrt(uint32_t dst_index, bool approx);
     void math_eltwise_unary_sfpu_sigmoid(uint32_t dst_index);
     void math_eltwise_unary_sfpu_log(uint32_t dst_index);
@@ -92,11 +106,16 @@ public:
     void math_eltwise_unary_sfpu_mul_scalar(uint32_t dst_index, uint32_t param0);
     void math_eltwise_unary_sfpu_div_scalar(uint32_t dst_index, uint32_t param0);
     void math_eltwise_unary_sfpu_rsub_scalar(uint32_t dst_index, uint32_t param0);
+    void math_eltwise_unary_sfpu_ceil(uint32_t dst_index);
+    void math_eltwise_unary_sfpu_ceil_float32(uint32_t dst_index);
     void math_eltwise_unary_sfpu_elu(uint32_t dst_index, uint32_t param0);
     void math_eltwise_unary_sfpu_erf(uint32_t dst_index, bool approx);
     void math_eltwise_unary_sfpu_erfc(uint32_t dst_index, bool approx);
     void math_eltwise_unary_sfpu_erfinv(uint32_t dst_index);
     void math_eltwise_unary_sfpu_exponential(uint32_t dst_index);
+    void math_eltwise_unary_sfpu_fill_bitcast(uint32_t dst_index, uint32_t param0);
+    void math_eltwise_unary_sfpu_floor(uint32_t dst_index);
+    void math_eltwise_unary_sfpu_floor_float32(uint32_t dst_index);
     void math_eltwise_unary_sfpu_gelu(uint32_t dst_index, bool approx);
     void math_eltwise_unary_sfpu_i0(uint32_t dst_index);
     void math_eltwise_unary_sfpu_isinf(uint32_t dst_index);
@@ -114,6 +133,10 @@ public:
     void math_eltwise_unary_sfpu_sine(uint32_t dst_index);
     void math_eltwise_unary_sfpu_cosine(uint32_t dst_index);
     void math_eltwise_unary_sfpu_tan(uint32_t dst_index);
+    void math_eltwise_unary_sfpu_typecast(
+        uint32_t in_dtype, 
+        uint32_t out_dtype, 
+        uint32_t dst_index);
 private:
     void reserve_block(uint32_t tiles);
     DataFormat get_cb_data_format(uint32_t operand);
@@ -126,7 +149,10 @@ private:
 private:
     static const uint32_t TILE_DIM = 32;
     static const uint32_t TILE_SIZE = TILE_DIM * TILE_DIM;
+#if 0 // TODO: Revise this
     static const uint32_t DST_COUNT = 16;
+#endif
+    static const uint32_t DST_COUNT = 8;
 private:
     Memory *m_l1;
     CB *m_cb;

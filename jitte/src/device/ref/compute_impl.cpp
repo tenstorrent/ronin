@@ -643,6 +643,66 @@ void ComputeImpl::pack_untilize_init_short(uint32_t icb, uint32_t ocb, uint32_t 
     // nothing to do
 }
 
+// copy_dest_values
+
+void ComputeImpl::copy_dest_values_init() {
+    // nothing to do
+}
+
+void ComputeImpl::copy_dest_values(uint32_t idst0, uint32_t idst1) {
+    m_llk.math_eltwise_binary_sfpu_copy_dest_values(idst0, idst1);
+}
+
+// eltwise_binary_sfpu
+
+void ComputeImpl::add_binary_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::add_binary_tile(uint32_t idst0, uint32_t idst1) {
+    m_llk.math_eltwise_binary_sfpu_binop(SfpuBinaryOp::ADD, idst0, idst1);
+}
+
+void ComputeImpl::sub_binary_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::sub_binary_tile(uint32_t idst0, uint32_t idst1) {
+    m_llk.math_eltwise_binary_sfpu_binop(SfpuBinaryOp::SUB, idst0, idst1);
+}
+
+void ComputeImpl::mul_binary_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::mul_binary_tile(uint32_t idst0, uint32_t idst1) {
+    m_llk.math_eltwise_binary_sfpu_binop(SfpuBinaryOp::MUL, idst0, idst1);
+}
+
+void ComputeImpl::div_binary_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::div_binary_tile(uint32_t idst0, uint32_t idst1) {
+    m_llk.math_eltwise_binary_sfpu_binop(SfpuBinaryOp::DIV, idst0, idst1);
+}
+
+void ComputeImpl::rsub_binary_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::rsub_binary_tile(uint32_t idst0, uint32_t idst1) {
+    m_llk.math_eltwise_binary_sfpu_binop(SfpuBinaryOp::RSUB, idst0, idst1);
+}
+
+void ComputeImpl::power_binary_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::power_binary_tile(uint32_t idst0, uint32_t idst1) {
+    m_llk.math_eltwise_binary_sfpu_binop(SfpuBinaryOp::POW, idst0, idst1);
+}
+
 // eltwise_unary_sfpu
 
 void ComputeImpl::rsqrt_tile_init() {
@@ -855,6 +915,20 @@ void ComputeImpl::rsub_unary_tile(uint32_t idst, uint32_t param0) {
     m_llk.math_eltwise_unary_sfpu_rsub_scalar(idst, param0);
 }
 
+// eltwise_unary/ceil
+
+void ComputeImpl::ceil_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::ceil_tile(uint32_t idst) {
+    m_llk.math_eltwise_unary_sfpu_ceil(idst);
+}
+
+void ComputeImpl::ceil_tile_float32(uint32_t idst) {
+    m_llk.math_eltwise_unary_sfpu_ceil_float32(idst);
+}
+
 // eltwise_unary/elu
 
 void ComputeImpl::elu_tile_init() {
@@ -901,6 +975,30 @@ void ComputeImpl::exp_tile_init() {
 
 void ComputeImpl::exp_tile(uint32_t idst) {
     m_llk.math_eltwise_unary_sfpu_exponential(idst);
+}
+
+// eltwise_unary/fill
+
+void ComputeImpl::fill_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::fill_tile_bitcast(uint32_t idst, uint32_t param) {
+    m_llk.math_eltwise_unary_sfpu_fill_bitcast(idst, param);
+}
+
+// eltwise_unary/floor
+
+void ComputeImpl::floor_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::floor_tile(uint32_t idst) {
+    m_llk.math_eltwise_unary_sfpu_floor(idst);
+}
+
+void ComputeImpl::floor_tile_float32(uint32_t idst) {
+    m_llk.math_eltwise_unary_sfpu_floor_float32(idst);
 }
 
 // eltwise_unary/gelu
@@ -1055,6 +1153,16 @@ void ComputeImpl::tan_tile(uint32_t idst) {
     m_llk.math_eltwise_unary_sfpu_tan(idst);
 }
 
+// eltwise_unary/typecast
+
+void ComputeImpl::typecast_tile_init() {
+    // nothing to do
+}
+
+void ComputeImpl::typecast_tile(uint32_t in_dtype, uint32_t out_dtype, uint32_t idst) {
+    m_llk.math_eltwise_unary_sfpu_typecast(in_dtype, out_dtype, idst);
+}
+
 // Tanto extensions: math
 
 void ComputeImpl::tanto_compute_init() {
@@ -1153,6 +1261,34 @@ void ComputeImpl::tanto_untilize_block_init() {
     // nothing to do
 }
 
+void ComputeImpl::tanto_copy_dst_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_add_dst_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_sub_dst_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_rsub_dst_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_mul_dst_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_div_dst_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_power_dst_init() {
+    // nothing to do
+}
+
 void ComputeImpl::tanto_abs_init() {
     // nothing to do
 }
@@ -1170,6 +1306,14 @@ void ComputeImpl::tanto_atan_init() {
 }
 
 void ComputeImpl::tanto_binary_scalar_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_cast_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_ceil_init() {
     // nothing to do
 }
 
@@ -1206,6 +1350,14 @@ void ComputeImpl::tanto_exp2_init() {
 }
 
 void ComputeImpl::tanto_expm1_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_fill_init() {
+    // nothing to do
+}
+
+void ComputeImpl::tanto_floor_init() {
     // nothing to do
 }
 

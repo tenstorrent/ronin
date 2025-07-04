@@ -97,6 +97,20 @@
     DECL_BUILTIN(pack_untilize_dst_init_short, 6) \
     DECL_BUILTIN(pack_untilize_dst, 8) \
     DECL_BUILTIN(pack_untilize_init_short, 3) \
+    DECL_BUILTIN(copy_dest_values_init, 0) \
+    DECL_BUILTIN(copy_dest_values, 2) \
+    DECL_BUILTIN(add_binary_tile_init, 0) \
+    DECL_BUILTIN(add_binary_tile, 2) \
+    DECL_BUILTIN(sub_binary_tile_init, 0) \
+    DECL_BUILTIN(sub_binary_tile, 2) \
+    DECL_BUILTIN(mul_binary_tile_init, 0) \
+    DECL_BUILTIN(mul_binary_tile, 2) \
+    DECL_BUILTIN(div_binary_tile_init, 0) \
+    DECL_BUILTIN(div_binary_tile, 2) \
+    DECL_BUILTIN(rsub_binary_tile_init, 0) \
+    DECL_BUILTIN(rsub_binary_tile, 2) \
+    DECL_BUILTIN(power_binary_tile_init, 0) \
+    DECL_BUILTIN(power_binary_tile, 2) \
     DECL_BUILTIN(rsqrt_tile_init, 0) \
     DECL_BUILTIN(rsqrt_tile, 2) \
     DECL_BUILTIN(sigmoid_tile_init, 0) \
@@ -149,6 +163,9 @@
     DECL_BUILTIN(mul_unary_tile, 2) \
     DECL_BUILTIN(div_unary_tile, 2) \
     DECL_BUILTIN(rsub_unary_tile, 2) \
+    DECL_BUILTIN(ceil_tile_init, 0) \
+    DECL_BUILTIN(ceil_tile, 1) \
+    DECL_BUILTIN(ceil_tile_float32, 1) \
     DECL_BUILTIN(elu_tile_init, 0) \
     DECL_BUILTIN(elu_tile, 2) \
     DECL_BUILTIN(erf_tile_init, 0) \
@@ -159,6 +176,11 @@
     DECL_BUILTIN(erfinv_tile, 1) \
     DECL_BUILTIN(exp_tile_init, 0) \
     DECL_BUILTIN(exp_tile, 1) \
+    DECL_BUILTIN(fill_tile_init, 0) \
+    DECL_BUILTIN(fill_tile_bitcast, 2) \
+    DECL_BUILTIN(floor_tile_init, 0) \
+    DECL_BUILTIN(floor_tile, 1) \
+    DECL_BUILTIN(floor_tile_float32, 1) \
     DECL_BUILTIN(gelu_tile_init, 0) \
     DECL_BUILTIN(gelu_tile, 2) \
     DECL_BUILTIN(i0_tile_init, 0) \
@@ -192,7 +214,9 @@
     DECL_BUILTIN(cos_tile_init, 0) \
     DECL_BUILTIN(cos_tile, 1) \
     DECL_BUILTIN(tan_tile_init, 0) \
-    DECL_BUILTIN(tan_tile, 1)
+    DECL_BUILTIN(tan_tile, 1) \
+    DECL_BUILTIN(typecast_tile_init, 0) \
+    DECL_BUILTIN(typecast_tile, 3)
 
 //
 //    Compute builtin enumeration

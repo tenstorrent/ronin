@@ -305,6 +305,22 @@ public:
         uint32_t full_ct_dim, 
         bool diagonal) override;
     void pack_untilize_init_short(uint32_t icb, uint32_t ocb, uint32_t block_ct_dim) override;
+    // copy_dest_values
+    void copy_dest_values_init() override;
+    void copy_dest_values(uint32_t idst0, uint32_t idst1) override;
+    // eltwise_binary_sfpu
+    void add_binary_tile_init() override;
+    void add_binary_tile(uint32_t idst0, uint32_t idst1) override;
+    void sub_binary_tile_init() override;
+    void sub_binary_tile(uint32_t idst0, uint32_t idst1) override;
+    void mul_binary_tile_init() override;
+    void mul_binary_tile(uint32_t idst0, uint32_t idst1) override;
+    void div_binary_tile_init() override;
+    void div_binary_tile(uint32_t idst0, uint32_t idst1) override;
+    void rsub_binary_tile_init() override;
+    void rsub_binary_tile(uint32_t idst0, uint32_t idst1) override;
+    void power_binary_tile_init() override;
+    void power_binary_tile(uint32_t idst0, uint32_t idst1) override;
     // eltwise_unary_sfpu
     void rsqrt_tile_init() override;
     void rsqrt_tile(uint32_t idst, bool fast_and_approx) override;
@@ -359,6 +375,10 @@ public:
     void mul_unary_tile(uint32_t idst, uint32_t param0) override;
     void div_unary_tile(uint32_t idst, uint32_t param0) override;
     void rsub_unary_tile(uint32_t idst, uint32_t param0) override;
+    // eltwise_unary/ceil
+    void ceil_tile_init() override;
+    void ceil_tile(uint32_t idst) override;
+    void ceil_tile_float32(uint32_t idst) override;
     // eltwise_unary/elu
     void elu_tile_init() override;
     void elu_tile(uint32_t idst, uint32_t param0) override;
@@ -373,6 +393,13 @@ public:
     // eltwise_unary/exp
     void exp_tile_init() override;
     void exp_tile(uint32_t idst) override;
+    // eltwise_unary/fill
+    void fill_tile_init() override;
+    void fill_tile_bitcast(uint32_t idst, uint32_t param) override;
+    // eltwise_unary/floor
+    void floor_tile_init() override;
+    void floor_tile(uint32_t idst) override;
+    void floor_tile_float32(uint32_t idst) override;
     // eltwise_unary/gelu
     void gelu_tile_init() override;
     void gelu_tile(uint32_t idst, bool fast_and_approx) override;
@@ -415,6 +442,9 @@ public:
     void cos_tile(uint32_t idst) override;
     void tan_tile_init() override;
     void tan_tile(uint32_t idst) override;
+    // eltwise_unary/typecast.h
+    void typecast_tile_init() override;
+    void typecast_tile(uint32_t in_dtype, uint32_t out_dtype, uint32_t idst) override;
     // Tanto extensions: math
     void tanto_compute_init() override;
     void tanto_copy_init() override;
@@ -440,11 +470,20 @@ public:
     void tanto_transpose_init() override;
     void tanto_tilize_block_init() override;
     void tanto_untilize_block_init() override;
+    void tanto_copy_dst_init() override;
+    void tanto_add_dst_init() override;
+    void tanto_sub_dst_init() override;
+    void tanto_rsub_dst_init() override;
+    void tanto_mul_dst_init() override;
+    void tanto_div_dst_init() override;
+    void tanto_power_dst_init() override;
     void tanto_abs_init() override;
     void tanto_acos_init() override;
     void tanto_asin_init() override;
     void tanto_atan_init() override;
     void tanto_binary_scalar_init() override;
+    void tanto_cast_init() override;
+    void tanto_ceil_init() override;
     void tanto_cos_init() override;
     void tanto_elu_init() override;
     void tanto_eqz_init() override;
@@ -454,6 +493,8 @@ public:
     void tanto_exp_init() override;
     void tanto_exp2_init() override;
     void tanto_expm1_init() override;
+    void tanto_fill_init() override;
+    void tanto_floor_init() override;
     void tanto_gelu_init() override;
     void tanto_gez_init() override;
     void tanto_gtz_init() override;

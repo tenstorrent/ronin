@@ -814,6 +814,80 @@ void pack_untilize_init_short(Compute *api, Riscv32Core *core) {
     api->pack_untilize_init_short(icb, ocb, block_ct_dim);
 }
 
+// copy_dest_values
+
+void copy_dest_values_init(Compute *api, Riscv32Core *core) {
+    api->copy_dest_values_init();
+}
+
+void copy_dest_values(Compute *api, Riscv32Core *core) {
+    uint32_t idst0 = core->get_arg(0);
+    uint32_t idst1 = core->get_arg(1);
+    api->copy_dest_values(idst0, idst1);
+}
+
+// eltwise_binary_sfpu
+
+void add_binary_tile_init(Compute *api, Riscv32Core *core) {
+    api->add_binary_tile_init();
+}
+
+void add_binary_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst0 = core->get_arg(0);
+    uint32_t idst1 = core->get_arg(1);
+    api->add_binary_tile(idst0, idst1);
+}
+
+void sub_binary_tile_init(Compute *api, Riscv32Core *core) {
+    api->sub_binary_tile_init();
+}
+
+void sub_binary_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst0 = core->get_arg(0);
+    uint32_t idst1 = core->get_arg(1);
+    api->sub_binary_tile(idst0, idst1);
+}
+
+void mul_binary_tile_init(Compute *api, Riscv32Core *core) {
+    api->mul_binary_tile_init();
+}
+
+void mul_binary_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst0 = core->get_arg(0);
+    uint32_t idst1 = core->get_arg(1);
+    api->mul_binary_tile(idst0, idst1);
+}
+
+void div_binary_tile_init(Compute *api, Riscv32Core *core) {
+    api->div_binary_tile_init();
+}
+
+void div_binary_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst0 = core->get_arg(0);
+    uint32_t idst1 = core->get_arg(1);
+    api->div_binary_tile(idst0, idst1);
+}
+
+void rsub_binary_tile_init(Compute *api, Riscv32Core *core) {
+    api->rsub_binary_tile_init();
+}
+
+void rsub_binary_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst0 = core->get_arg(0);
+    uint32_t idst1 = core->get_arg(1);
+    api->rsub_binary_tile(idst0, idst1);
+}
+
+void power_binary_tile_init(Compute *api, Riscv32Core *core) {
+    api->power_binary_tile_init();
+}
+
+void power_binary_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst0 = core->get_arg(0);
+    uint32_t idst1 = core->get_arg(1);
+    api->power_binary_tile(idst0, idst1);
+}
+
 // eltwise_unary_sfpu
 
 void rsqrt_tile_init(Compute *api, Riscv32Core *core) {
@@ -1028,6 +1102,22 @@ void acos_tile(Compute *api, Riscv32Core *core) {
     api->acos_tile(idst);
 }
 
+// eltwise_unary/ceil
+
+void ceil_tile_init(Compute *api, Riscv32Core *core) {
+    api->ceil_tile_init();
+}
+
+void ceil_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst = core->get_arg(0);
+    api->ceil_tile(idst);
+}
+
+void ceil_tile_float32(Compute *api, Riscv32Core *core) {
+    uint32_t idst = core->get_arg(0);
+    api->ceil_tile_float32(idst);
+}
+
 // eltwise_unary/elu
 
 void elu_tile_init(Compute *api, Riscv32Core *core) {
@@ -1118,6 +1208,34 @@ void exp_tile_init(Compute *api, Riscv32Core *core) {
 void exp_tile(Compute *api, Riscv32Core *core) {
     uint32_t idst = core->get_arg(0);
     api->exp_tile(idst);
+}
+
+// eltwise_unary/fill
+
+void fill_tile_init(Compute *api, Riscv32Core *core) {
+    api->fill_tile_init();
+}
+
+void fill_tile_bitcast(Compute *api, Riscv32Core *core) {
+    uint32_t idst = core->get_arg(0);
+    uint32_t param = core->get_arg(1);
+    api->fill_tile_bitcast(idst, param);
+}
+
+// eltwise_unary/floor
+
+void floor_tile_init(Compute *api, Riscv32Core *core) {
+    api->floor_tile_init();
+}
+
+void floor_tile(Compute *api, Riscv32Core *core) {
+    uint32_t idst = core->get_arg(0);
+    api->floor_tile(idst);
+}
+
+void floor_tile_float32(Compute *api, Riscv32Core *core) {
+    uint32_t idst = core->get_arg(0);
+    api->floor_tile_float32(idst);
 }
 
 // eltwise_unary/gelu
@@ -1291,6 +1409,19 @@ void tan_tile_init(Compute *api, Riscv32Core *core) {
 void tan_tile(Compute *api, Riscv32Core *core) {
     uint32_t idst = core->get_arg(0);
     api->tan_tile(idst);
+}
+
+// eltwise_unary/typecast.h
+
+void typecast_tile_init(Compute *api, Riscv32Core *core) {
+    api->typecast_tile_init();
+}
+
+void typecast_tile(Compute *api, Riscv32Core *core) {
+    uint32_t in_dtype = core->get_arg(0);
+    uint32_t out_dtype = core->get_arg(1);
+    uint32_t idst = core->get_arg(2);
+    api->typecast_tile(in_dtype, out_dtype, idst);
 }
 
 } // namespace
