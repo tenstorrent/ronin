@@ -10,6 +10,7 @@ The source code is located in `yari/op/src` and includes the following sections:
 binary        elementwise binary operations
 common        common basic functionality
 conv          convolution
+deform_conv   deformable convolution
 fc            fully connected layer (matmul + bias)
 group_conv    group convolution (including depthwise)
 interp        interpolation
